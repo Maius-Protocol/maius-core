@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { web3 } from "@project-serum/anchor";
 import idl from "../idl.json";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import {
   ConnectionProvider,
+  useWallet,
   WalletProvider,
 } from "@solana/wallet-adapter-react";
 import {
   WalletModalProvider,
   WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
+import { useRouter } from "next/router";
 
 const wallets = [new PhantomWalletAdapter()];
 
@@ -24,6 +26,19 @@ interface AppProviderProps {
 const ChildProvider: React.FunctionComponent<AppProviderProps> = ({
   children,
 }: AppProviderProps) => {
+  const router = useRouter();
+  const wallet = useWallet();
+
+  useEffect(() => {
+    if (
+      !wallet.connected &&
+      router.pathname !== "/" &&
+      router.pathname !== "/payment"
+    ) {
+      // router.push("/");
+    }
+  }, [wallet.connected, router.pathname]);
+
   return <>{children}</>;
 };
 

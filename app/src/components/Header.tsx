@@ -67,44 +67,45 @@ const Navigation = () => {
             fontWeight="bold"
             color={useColorModeValue("gray.800", "white")}
           >
-            💳 Maius Payment Gateway
+            Maius Payment Gateway
           </Text>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <Stack direction={"row"} spacing={4}>
-              {NAV_ITEMS.map((navItem) => (
-                <Box key={navItem.label}>
-                  <Popover trigger={"hover"} placement={"bottom-start"}>
-                    <PopoverTrigger>
-                      <LinkNext href={navItem.href as any}>
-                        <Link
-                          p={2}
-                          href={navItem.href ?? "#"}
-                          fontSize={"sm"}
-                          fontWeight={500}
-                          color={linkColor}
-                          _hover={{
-                            textDecoration: "none",
-                            color: linkHoverColor,
-                          }}
-                          display="flex"
-                          alignItems="center"
-                        >
-                          <Icon
-                            mr="4"
-                            fontSize="16"
-                            _groupHover={{
-                              color: "white",
+              {wallet.connected &&
+                NAV_ITEMS.map((navItem) => (
+                  <Box key={navItem.label}>
+                    <Popover trigger={"hover"} placement={"bottom-start"}>
+                      <PopoverTrigger>
+                        <LinkNext href={navItem.href as any}>
+                          <Link
+                            p={2}
+                            href={navItem.href ?? "#"}
+                            fontSize={"sm"}
+                            fontWeight={500}
+                            color={linkColor}
+                            _hover={{
+                              textDecoration: "none",
+                              color: linkHoverColor,
                             }}
-                            as={navItem.icon}
-                          />
-                          {navItem.label}
-                        </Link>
-                      </LinkNext>
-                    </PopoverTrigger>
-                  </Popover>
-                </Box>
-              ))}
+                            display="flex"
+                            alignItems="center"
+                          >
+                            <Icon
+                              mr="4"
+                              fontSize="16"
+                              _groupHover={{
+                                color: "white",
+                              }}
+                              as={navItem.icon}
+                            />
+                            {navItem.label}
+                          </Link>
+                        </LinkNext>
+                      </PopoverTrigger>
+                    </Popover>
+                  </Box>
+                ))}
             </Stack>
           </Flex>
         </Flex>

@@ -19,6 +19,8 @@
     "@solana/wallet-adapter-react-ui": "^0.9.6",
     "@solana/wallet-adapter-wallets": "^0.16.1",
     "@solana/web3.js": "^1.42.0",
+    "axios": "^0.27.2",
+    "encodeurl": "^1.0.2",
     "framer-motion": "^6",
     "lodash": "^4.17.21",
     "lottie-react": "^2.2.1",

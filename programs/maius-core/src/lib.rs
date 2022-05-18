@@ -8,7 +8,7 @@ pub mod nullifier_state;
 pub mod poseidon_merkle_tree;
 pub mod utils;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("CLagu798DNZwfLmZyiN8tSR6WYn14QV44L3UkeKjXJgs");
 
 #[program]
 pub mod maius_core {

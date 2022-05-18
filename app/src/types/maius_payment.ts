@@ -26,12 +26,7 @@ export type MaiusPayment = {
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "merchantAccountBump",
-          "type": "u8"
-        }
-      ]
+      "args": []
     }
   ],
   "accounts": [
@@ -94,12 +89,7 @@ export const IDL: MaiusPayment = {
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "merchantAccountBump",
-          "type": "u8"
-        }
-      ]
+      "args": []
     }
   ],
   "accounts": [

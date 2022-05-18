@@ -6,6 +6,13 @@ import Head from "next/head";
 import { ChakraProvider, Container, Flex } from "@chakra-ui/react";
 import Navigation from "../src/components/Header";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from "@solana/wallet-adapter-react";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import React from "react";
+import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -15,23 +22,32 @@ const queryClient = new QueryClient({
   },
 });
 
+const wallets = [new PhantomWalletAdapter()];
+const ENDPOINT = "http://127.0.0.1:8899";
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
+      <Head>
+        <title>Maius Payment Gateway</title>
+      </Head>
       <ChakraProvider>
-        <AppProvider>
-          <Head>
-            <title>Maius Payment Gateway</title>
-          </Head>
-          <>
-            <Flex top={0} as="header" position="fixed" w="100%">
-              <Navigation />
-            </Flex>
-            <Container as="main" mt="20" w="100%" maxW="100%">
-              <Component {...pageProps} />
-            </Container>
-          </>
-        </AppProvider>
+        <ConnectionProvider endpoint={ENDPOINT}>
+          <WalletProvider wallets={wallets} autoConnect>
+            <WalletModalProvider>
+              <AppProvider>
+                <>
+                  <Flex top={0} as="header" position="fixed" w="100%">
+                    <Navigation />
+                  </Flex>
+                  <Container as="main" mt="20" w="100%" maxW="100%">
+                    <Component {...pageProps} />
+                  </Container>
+                </>
+              </AppProvider>
+            </WalletModalProvider>
+          </WalletProvider>
+        </ConnectionProvider>
       </ChakraProvider>
     </QueryClientProvider>
   );

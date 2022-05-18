@@ -5,7 +5,7 @@ pub mod schema;
 pub mod instructions;
 
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("DxpaiU8mDpHZ3fLbN15ruifDP1QaFpY3QBSpMw71L6Pe");
 
 #[program]
 pub mod maius_payment {
@@ -15,8 +15,7 @@ pub mod maius_payment {
         Ok(())
     }
 
-    pub fn initializeMerchant(ctx: Context<InitializeMerchant>, merchant_account_bump: u8) -> ProgramResult {
-        ctx.accounts.merchant_account.bump = merchant_account_bump;
+    pub fn initializeMerchant(ctx: Context<InitializeMerchant>) -> ProgramResult {
         ctx.accounts.merchant_account.authority = *ctx.accounts.user.to_account_info().key;
         Ok(())
     }

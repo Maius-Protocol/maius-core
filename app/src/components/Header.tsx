@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Flex,
   Icon,
   IconButton,
@@ -17,7 +18,8 @@ import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import React from "react";
-import { FiDollarSign, FiHome, FiPlusCircle } from "react-icons/fi";
+import { FiDollarSign, FiHome, FiPlusCircle, FiSettings } from "react-icons/fi";
+import CurrentBalance from "./Header/CurrentBalance";
 
 const Navigation = () => {
   const { isOpen, onToggle } = useDisclosure();
@@ -110,7 +112,12 @@ const Navigation = () => {
           </Flex>
         </Flex>
 
-        {wallet.connected && <WalletMultiButton />}
+        {wallet.connected && (
+          <>
+            <CurrentBalance />-
+            <WalletMultiButton />
+          </>
+        )}
       </Flex>
     </Box>
   );
@@ -139,6 +146,11 @@ const NAV_ITEMS: Array<NavItem> = [
     label: "Transactions",
     href: "/transactions",
     icon: FiDollarSign,
+  },
+  {
+    label: "Settings",
+    href: "/settings",
+    icon: FiSettings,
   },
 ];
 export default Navigation;

@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*
+use anchor_lang::prelude::*;
 
 #[account]
 pub struct Transaction {
@@ -14,6 +14,6 @@ impl Transaction {
         32 + // user_wallet
         4 + order_id.len() + // order_id
         4 + service_id.len() + // service_id
-        1 + // is_paid
+        1 // is_paid
     }
 }

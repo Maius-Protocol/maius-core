@@ -48,14 +48,7 @@ pub fn init(ctx: Context<InitTransaction>, seller_wallet: Pubkey, order_id: Stri
     Ok(())
 }
 
-pub fn transfer(ctx: Context<InitTransaction>, seller_wallet: Pubkey, expected_amount) -> Result<()> {
-    if {
-        "pubkey": 
-        "expected_amount": 1,
-        "amount": 5
-    }
-    pubkey -> data expected_amount tren chain
-    
+pub fn transfer(ctx: Context<InitTransaction>, seller_wallet: Pubkey) -> Result<()> {
 
     let wallet_b = &mut ctx.accounts.authority;
     let transaction = &mut ctx.accounts.transaction;
@@ -68,6 +61,6 @@ pub fn transfer(ctx: Context<InitTransaction>, seller_wallet: Pubkey, expected_a
         &ix_sol_transfer,
         &[wallet_b.to_account_info()],
     )?;
-    transaction.is_paid = true
+    transaction.is_paid = true;
     Ok(())
 }

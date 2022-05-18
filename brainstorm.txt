@@ -1,0 +1,43 @@
+
+https://maius.eth/payment?seller_wallet=<SellerWallet>&user_id=<WalletB>&order_id=
+
+Tại trang connect vào ví trả tiền (ví A)
+
+Ví A -> Ví B -> Seller
+
+Seller PDA Success {
+Address
+}
+
+# solana {
+	payment(ví A, ví B, context) {
+		
+		chuyển tiền từ ví A -> ví B.
+		chuyển tiền từ ví B -> seller.
+		nếu transfer thành công -> goi callback
+
+	}
+}
+
+Seller {
+	currency: USDC
+	wallet_id:
+	name:
+	logo: IPFS
+	participants: Array[Public Key]
+	success_callback_pda: Address
+	amount_expected: 
+}
+
+
+
+PoolB->Seller {
+	
+}
+
+PoolA-> PoolB (zero) {
+	
+}
+
+User {
+}

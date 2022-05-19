@@ -84,7 +84,7 @@ export type MaiusPayment = {
       ]
     },
     {
-      "name": "createTransaction",
+      "name": "initializeInvoice",
       "accounts": [
         {
           "name": "serviceAccount",
@@ -92,7 +92,7 @@ export type MaiusPayment = {
           "isSigner": false
         },
         {
-          "name": "transactionAccount",
+          "name": "invoiceAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -141,10 +141,6 @@ export type MaiusPayment = {
         "kind": "struct",
         "fields": [
           {
-            "name": "transactionCount",
-            "type": "u8"
-          },
-          {
             "name": "authority",
             "type": "publicKey"
           },
@@ -155,12 +151,18 @@ export type MaiusPayment = {
           {
             "name": "expectedAmount",
             "type": "u64"
+          },
+          {
+            "name": "subscriptionAccounts",
+            "type": {
+              "vec": "publicKey"
+            }
           }
         ]
       }
     },
     {
-      "name": "transaction",
+      "name": "invoice",
       "type": {
         "kind": "struct",
         "fields": [
@@ -264,7 +266,7 @@ export const IDL: MaiusPayment = {
       ]
     },
     {
-      "name": "createTransaction",
+      "name": "initializeInvoice",
       "accounts": [
         {
           "name": "serviceAccount",
@@ -272,7 +274,7 @@ export const IDL: MaiusPayment = {
           "isSigner": false
         },
         {
-          "name": "transactionAccount",
+          "name": "invoiceAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -321,10 +323,6 @@ export const IDL: MaiusPayment = {
         "kind": "struct",
         "fields": [
           {
-            "name": "transactionCount",
-            "type": "u8"
-          },
-          {
             "name": "authority",
             "type": "publicKey"
           },
@@ -335,12 +333,18 @@ export const IDL: MaiusPayment = {
           {
             "name": "expectedAmount",
             "type": "u64"
+          },
+          {
+            "name": "subscriptionAccounts",
+            "type": {
+              "vec": "publicKey"
+            }
           }
         ]
       }
     },
     {
-      "name": "transaction",
+      "name": "invoice",
       "type": {
         "kind": "struct",
         "fields": [

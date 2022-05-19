@@ -23,7 +23,7 @@ import animation from "../src/components/41375-laptop-rocket.json";
 
 const SettingsPage = () => {
   useEffect(() => {}, []);
-  const { program, merchantAccount, currentMerchantData, getMerchantData } =
+  const { program, merchantAccount, currentMerchantData } =
     useApp();
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
@@ -45,8 +45,8 @@ const SettingsPage = () => {
           user: publicKey?.toBase58(),
         })
         .transaction();
-      await sendTransaction(tx, connection);
-      await getMerchantData();
+      await sendTransaction(tx, connection, {});
+      await currentMerchantData.refetch();
     } catch (e: any) {
       toast({
         title: "Error",
@@ -65,7 +65,10 @@ const SettingsPage = () => {
           merchantAccount: merchantAccount,
         })
         .transaction();
-      await sendTransaction(tx, connection);
+      await sendTransaction(tx, connection, {
+        preflightCommitment: 'processed'
+      });
+      await currentMerchantData.refetch()
       toast({
         title: "Update data successful. Please refetch page after a while.",
         status: "success",

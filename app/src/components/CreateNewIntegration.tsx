@@ -26,32 +26,22 @@ const anchor = require("@project-serum/anchor");
 
 const CreateNewIntegration = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { program, merchantAccount } = useApp();
+  const { program, merchantAccount, getServiceAccount, currentMerchantData } =
+    useApp();
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
   const toast = useToast();
-  const getServiceAccount = async () => {
-    const [_serviceAccount] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from("service"),
-        merchantAccount?.toBuffer(),
-        new anchor.BN(0)?.toArrayLike(Buffer),
-      ],
-      programID
-    );
-    return _serviceAccount;
-  };
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm();
-
-  const { mutateAsync: createService } = useMutation(
+  const { mutateAsync: createService, isLoading } = useMutation(
     async ({ title, expected_amount }: any) => {
-      const serviceAccount = await getServiceAccount();
+      const serviceAccount = await getServiceAccount(
+        currentMerchantData?.data?.serviceCount || 0
+      );
       const tx = await program.methods
         .createService(title, new anchor.BN(expected_amount))
         .accounts({
@@ -61,7 +51,6 @@ const CreateNewIntegration = () => {
           systemProgram: web3.SystemProgram.programId,
         })
         .transaction();
-      console.log(tx);
       return await sendTransaction(tx, connection);
     },
     {
@@ -95,9 +84,22 @@ const CreateNewIntegration = () => {
 
   return (
     <>
-      <Button onClick={onOpen} ml={2} size="lg" bg="green.500" color="white">
-        Create New Service
-      </Button>
+      <div>
+        <Button onClick={onOpen} ml={2} size="lg" bg="green.500" color="white">
+          Create New Service
+        </Button>
+
+        <Button
+          onClick={() => {
+            currentMerchantData.refetch();
+          }}
+          ml={2}
+          size="lg"
+          isLoading={currentMerchantData.isRefetching}
+        >
+          Refetch
+        </Button>
+      </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -130,7 +132,12 @@ const CreateNewIntegration = () => {
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} type="submit">
+              <Button
+                isLoading={isLoading}
+                colorScheme="blue"
+                mr={3}
+                type="submit"
+              >
                 Save
               </Button>
               <Button variant="ghost" onClick={onClose}>

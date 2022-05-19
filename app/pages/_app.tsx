@@ -18,6 +18,7 @@ import {
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import React from "react";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { ReactQueryDevtools } from "react-query/devtools";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -55,6 +56,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     <Component {...pageProps} />
                   </Container>
                 </>
+                <ReactQueryDevtools initialIsOpen={false} />
               </AppProvider>
             </WalletModalProvider>
           </WalletProvider>

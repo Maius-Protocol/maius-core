@@ -6,6 +6,7 @@ import idl from "../idl.json";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
 import { MaiusPayment } from "../types/maius_payment";
+import { useQuery, UseQueryResult } from "react-query";
 
 const { Keypair } = web3;
 export const programID = new PublicKey(idl.metadata.address);
@@ -17,6 +18,7 @@ interface AppProviderProps {
 interface AppContextState {
   program: anchor.Program<MaiusPayment>;
   merchantAccount: PublicKey | undefined;
+  currentMerchantData: UseQueryResult<any>;
 }
 
 const AppContext = React.createContext<AppContextState | undefined>(undefined);
@@ -27,10 +29,15 @@ const ChildProvider: React.FunctionComponent<AppProviderProps> = ({
   const [merchantAccount, setMerchantAccount] = useState<
     PublicKey | undefined
   >();
-
   const [program, setProgram] = useState<
     anchor.Program<MaiusPayment> | undefined
   >();
+
+  const currentMerchantData = useQuery("currentMerchant", () =>
+    program.account.merchant.fetch(merchantAccount?.toBase58()!)
+  );
+
+  const {} = useQuery();
   const router = useRouter();
   const wallet = useWallet();
   const connection = useConnection();
@@ -51,6 +58,23 @@ const ChildProvider: React.FunctionComponent<AppProviderProps> = ({
     setMerchantAccount(_merchantAccount);
   };
 
+  const getServiceAccount = async (index: number) => {
+    const [_serviceAccount] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from("service"),
+        merchantAccount?.toBuffer(),
+        new anchor.BN(index)?.toArrayLike(Buffer),
+      ],
+      programID
+    );
+    return _serviceAccount;
+  };
+
+  const getServiceData = async (index: number) => {
+    const _serviceAccount = await getServiceAccount(index);
+    return await program.account.service.fetch(_serviceAccount);
+  };
+
   useEffect(() => {
     const _program: anchor.Program<MaiusPayment> = new anchor.Program(
       idl,
@@ -59,6 +83,12 @@ const ChildProvider: React.FunctionComponent<AppProviderProps> = ({
     );
     setProgram(_program);
   }, []);
+
+  useEffect(() => {
+    if (program?.account) {
+      currentMerchantData.refetch();
+    }
+  }, [program]);
 
   useEffect(() => {
     if (
@@ -73,7 +103,16 @@ const ChildProvider: React.FunctionComponent<AppProviderProps> = ({
   }, [router.pathname]);
 
   return (
-    <AppContext.Provider value={{ program, merchantAccount, provider }}>
+    <AppContext.Provider
+      value={{
+        program,
+        merchantAccount,
+        currentMerchantData,
+        provider,
+        getServiceAccount,
+        getServiceData,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

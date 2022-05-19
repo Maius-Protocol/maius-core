@@ -1,28 +1,30 @@
 import { web3 } from "@project-serum/anchor";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
-  Button,
-  FormLabel,
-  FormControl,
-  useToast,
-  FormErrorMessage,
-  Input,
   Box,
-  useColorModeValue,
-  Stack,
+  Button,
   Container,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
   Heading,
+  Input,
+  Spinner,
+  Stack,
+  useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import withAuth from "../src/hooks/withAuth";
 import { useApp } from "../src/hooks/useAppProvider";
 import Lottie from "lottie-react";
 import animation from "../src/components/41375-laptop-rocket.json";
+
 const SettingsPage = () => {
   useEffect(() => {}, []);
-  const [currentMerchantData, setCurrentMerchantData] = useState<any>();
-  const { program, merchantAccount } = useApp();
+  const { program, merchantAccount, currentMerchantData, getMerchantData } =
+    useApp();
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
   const toast = useToast();
@@ -32,18 +34,6 @@ const SettingsPage = () => {
     reset,
     formState: { errors },
   } = useForm();
-
-  const getMerchantData = async () => {
-    try {
-      const merchantState = await program.account.merchant.fetch(
-        merchantAccount?.toBase58()!
-      );
-      if (merchantState) {
-        reset({ title: merchantState.title, logo: merchantState.logo });
-      }
-      setCurrentMerchantData(merchantState);
-    } catch (e) {}
-  };
 
   const initializeMerchant = async () => {
     try {
@@ -92,12 +82,19 @@ const SettingsPage = () => {
   };
 
   useEffect(() => {
-    if (program?.account) {
-      getMerchantData();
+    if (currentMerchantData.data) {
+      reset({
+        title: currentMerchantData.data.title,
+        logo: currentMerchantData.data.logo,
+      });
     }
-  }, [program]);
+  }, [currentMerchantData.data]);
 
-  if (!currentMerchantData) {
+  if (currentMerchantData.isLoading) {
+    return <Spinner />;
+  }
+
+  if (!currentMerchantData.data) {
     return (
       <Container maxW={640} pt={12}>
         <Box
@@ -184,12 +181,10 @@ const SettingsPage = () => {
 
 const Page = () => {
   return (
-    <Container
-      w="100%"
-      minW="100%"
-      minH="100vh"
-      bg={useColorModeValue("gray.50", "gray.800")}
-    >
+    <Container w="100%" minW="100%" minH="100vh">
+      <Heading color={"gray.800"} lineHeight={1.1} fontSize={{ base: "3xl" }}>
+        Settings
+      </Heading>
       <SettingsPage />
     </Container>
   );

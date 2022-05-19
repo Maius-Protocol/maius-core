@@ -44,7 +44,6 @@ const ChildProvider: React.FunctionComponent<AppProviderProps> = ({
   const router = useRouter();
   const wallet = useWallet();
   const connection = useConnection();
-
   const provider = new anchor.AnchorProvider(
     connection.connection,
     wallet.wallet,

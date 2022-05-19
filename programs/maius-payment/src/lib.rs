@@ -15,7 +15,7 @@ pub mod maius_payment {
         Ok(())
     }
 
-    pub fn initializeMerchant(ctx: Context<InitializeMerchant>) -> ProgramResult {
+    pub fn initialize_merchant(ctx: Context<InitializeMerchant>) -> ProgramResult {
         ctx.accounts.merchant_account.authority = *ctx.accounts.user.to_account_info().key;
         Ok(())
     }

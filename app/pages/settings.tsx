@@ -1,57 +1,168 @@
-import { useApp } from "../src/hooks/useAppProvider";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { web3 } from "@project-serum/anchor";
-import { useEffect } from "react";
-import { Button, useToast } from "@chakra-ui/react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import {
+  Button,
+  FormLabel,
+  FormControl,
+  useToast,
+  FormErrorMessage,
+  Input,
+  Box,
+  useColorModeValue,
+  Stack,
+  Container,
+  Heading,
+  Text,
+} from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import withAuth from "../src/hooks/withAuth";
-
+import { useApp } from "../src/hooks/useAppProvider";
 const SettingsPage = () => {
-  const { program, provider, merchantAccount } = useApp();
+  useEffect(() => {}, []);
+  const [currentMerchantData, setCurrentMerchantData] = useState<any>();
+  const { program, merchantAccount } = useApp();
   const { connection } = useConnection();
-  const { publicKey, signTransaction, sendTransaction } = useWallet();
+  const { publicKey, sendTransaction } = useWallet();
   const toast = useToast();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => {};
 
-  console.log(program);
-  const fetchData = async () => {
-    // await connection.confirmTransaction(
-    // );
-
-    const tx = await program.methods
-      .initializeMerchant()
-      .accounts({
-        merchantAccount: merchantAccount,
-        systemProgram: web3.SystemProgram.programId,
-        user: publicKey?.toBase58(),
-      })
-      .transaction();
-
-    await sendTransaction(tx, connection);
-
-    console.log(merchantAccount?.toBase58());
+  const getMerchantData = async () => {
     try {
       const merchantState = await program.account.merchant.fetch(
         merchantAccount?.toBase58()!
       );
-    } catch (e) {
+      setCurrentMerchantData(merchantState);
+    } catch (e) {}
+  };
+
+  const initializeMerchant = async () => {
+    try {
+      const tx = await program.methods
+        .initializeMerchant()
+        .accounts({
+          merchantAccount: merchantAccount,
+          systemProgram: web3.SystemProgram.programId,
+          user: publicKey?.toBase58(),
+        })
+        .transaction();
+      await sendTransaction(tx, connection);
+      await getMerchantData();
+    } catch (e: any) {
       toast({
         title: "Error",
-        description: e?.toString(),
+        description: e?.message?.toString(),
         status: "error",
         position: "bottom-left",
       });
     }
-    // console.log("merchantState", merchantState);
   };
 
   useEffect(() => {
-    // fetchData();
-  }, []);
+    if (program?.account) {
+      getMerchantData();
+    }
+  }, [program]);
+
+  if (!currentMerchantData) {
+    return (
+      <Container maxW={640} pt={12}>
+        <Box
+          rounded={"lg"}
+          bg={useColorModeValue("white", "gray.700")}
+          boxShadow={"lg"}
+          p={8}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Heading
+            color={"gray.800"}
+            lineHeight={1.1}
+            fontSize={{ base: "3xl" }}
+          >
+            Your account has not been activated
+          </Heading>
+          <Button
+            onClick={initializeMerchant}
+            ml={2}
+            mt={20}
+            size="lg"
+            bg="green.500"
+            color="white"
+          >
+            Activate your merchant account
+          </Button>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
-    <div>
-      <Button onClick={fetchData}>test</Button>
-    </div>
+    <Container maxW={640} pt={12}>
+      <Box
+        rounded={"lg"}
+        bg={useColorModeValue("white", "gray.700")}
+        boxShadow={"lg"}
+        p={8}
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={4}>
+            <FormControl isInvalid={errors.name}>
+              <FormLabel htmlFor="title">Merchant Title</FormLabel>
+              <Input
+                placeholder="Spotify LLC"
+                type="text"
+                {...register("title", { required: true })}
+              />
+              <FormErrorMessage>{errors.name}</FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={errors.logo}>
+              <FormLabel htmlFor="logo">Merchant Logo URL</FormLabel>
+              <Input
+                placeholder="https://source.unsplash.com/200x200"
+                type="text"
+                {...register("logo", { required: true })}
+              />
+              <FormErrorMessage>{errors.name}</FormErrorMessage>
+            </FormControl>
+            <Stack spacing={10}>
+              <Button
+                bg={"blue.400"}
+                color={"white"}
+                _hover={{
+                  bg: "blue.500",
+                }}
+                type="submit"
+                mt={12}
+              >
+                Save
+              </Button>
+            </Stack>
+          </Stack>
+        </form>
+      </Box>
+    </Container>
   );
 };
 
-export default withAuth(SettingsPage);
+const Page = () => {
+  return (
+    <Container
+      w="100%"
+      minW="100%"
+      minH="100vh"
+      bg={useColorModeValue("gray.50", "gray.800")}
+    >
+      <SettingsPage />
+    </Container>
+  );
+};
+
+export default withAuth(Page);

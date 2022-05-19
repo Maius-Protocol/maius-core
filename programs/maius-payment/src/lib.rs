@@ -19,6 +19,13 @@ pub mod maius_payment {
         ctx.accounts.merchant_account.authority = *ctx.accounts.user.to_account_info().key;
         Ok(())
     }
+
+    pub fn update_merchant(ctx: Context<UpdateMerchant>, title: String, logo: String) -> ProgramResult {
+        let merchant_account = &mut ctx.accounts.merchant_account;
+        merchant_account.title = title;
+        merchant_account.logo = logo;
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -35,7 +42,7 @@ pub struct InitializeMerchant<'info> {
     ],
     bump,
     payer = user,
-    space = 500
+    space = 1000
     )]
     pub merchant_account: Account<'info, Merchant>,
     #[account(mut)]
@@ -44,13 +51,29 @@ pub struct InitializeMerchant<'info> {
 }
 
 
+#[derive(Accounts)]
+#[instruction(title: String, logo: String)]
+pub struct UpdateMerchant<'info> {
+    #[account(mut)]
+    pub merchant_account: Account<'info, Merchant>,
+}
+
 #[account]
 #[derive(Default)]
 pub struct Merchant {
-    pub bump: u8,
     pub service_count: u8,
     pub title: String,
     pub logo: String,
     pub authority: Pubkey,
 }
 
+
+// impl Merchant {
+//     pub fn space(title: &str, logo: &str) -> usize {
+//         8 + // discriminator
+//             8 + // service_count
+//             32 + // authority
+//             4 + title.len() + // title
+//             4 + logo.len() // logo
+//     }
+// }

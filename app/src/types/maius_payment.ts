@@ -27,6 +27,26 @@ export type MaiusPayment = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "updateMerchant",
+      "accounts": [
+        {
+          "name": "merchantAccount",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "logo",
+          "type": "string"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -35,10 +55,6 @@ export type MaiusPayment = {
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "bump",
-            "type": "u8"
-          },
           {
             "name": "serviceCount",
             "type": "u8"
@@ -90,6 +106,26 @@ export const IDL: MaiusPayment = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "updateMerchant",
+      "accounts": [
+        {
+          "name": "merchantAccount",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "logo",
+          "type": "string"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -98,10 +134,6 @@ export const IDL: MaiusPayment = {
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "bump",
-            "type": "u8"
-          },
           {
             "name": "serviceCount",
             "type": "u8"

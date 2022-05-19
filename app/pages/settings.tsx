@@ -28,15 +28,18 @@ const SettingsPage = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => {};
 
   const getMerchantData = async () => {
     try {
       const merchantState = await program.account.merchant.fetch(
         merchantAccount?.toBase58()!
       );
+      if (merchantState) {
+        reset({ title: merchantState.title, logo: merchantState.logo });
+      }
       setCurrentMerchantData(merchantState);
     } catch (e) {}
   };
@@ -53,6 +56,30 @@ const SettingsPage = () => {
         .transaction();
       await sendTransaction(tx, connection);
       await getMerchantData();
+    } catch (e: any) {
+      toast({
+        title: "Error",
+        description: e?.message?.toString(),
+        status: "error",
+        position: "bottom-left",
+      });
+    }
+  };
+
+  const onSubmit = async (data: any) => {
+    try {
+      const tx = await program.methods
+        .updateMerchant(data.title, data.logo)
+        .accounts({
+          merchantAccount: merchantAccount,
+        })
+        .transaction();
+      await sendTransaction(tx, connection);
+      toast({
+        title: "Update data successful. Please refetch page after a while.",
+        status: "success",
+        position: "bottom-left",
+      });
     } catch (e: any) {
       toast({
         title: "Error",

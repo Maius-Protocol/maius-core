@@ -19,6 +19,12 @@ Address
 	}
 }
 
+Merchant  =  Seller{
+has many service {
+    expected_amount:
+}
+}
+
 Seller {
 	currency: USDC
 	wallet_id:

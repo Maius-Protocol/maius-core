@@ -52,7 +52,6 @@ const IntegrationCard = ({ index }) => {
     "service-account-address",
     index,
   ]);
-  console.log(serviceAccountAddress);
   const paymentURL = `http://localhost:3000/payment?userID=USER_ID&merchantID=${merchantAccount?.toBase58()}&serviceID=${serviceAccountAddress}`;
 
   if (isLoading) {

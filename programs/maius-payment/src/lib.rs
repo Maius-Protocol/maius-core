@@ -35,10 +35,10 @@ pub mod maius_payment {
         Ok(())
     }
 
-    pub fn create_transaction(ctx: Context<CreateTransaction>) -> ProgramResult {
+    pub fn create_transaction(ctx: Context<CreateInvoice>) -> ProgramResult {
         ctx.accounts.transaction_account.user_wallet = *ctx.accounts.authority.to_account_info().key;
         ctx.accounts.transaction_account.is_paid = true;
-        ctx.accounts.service_account.transaction_count += 1;
+        ctx.accounts.service_account.invoice_count += 1;
         Ok(())
     }
 }
@@ -86,10 +86,17 @@ pub struct Merchant {
 #[account]
 #[derive(Default)]
 pub struct Service {
-    pub transaction_count: u8,
+    pub invoice_count: u8,
     pub authority: Pubkey,
     pub title: String,
-    pub expected_amount: u64,
+    pub expected_amount: u64
+
+}
+
+#[account]
+#[derive(Default)]
+pub struct ServicePeriod {
+    pub expire_timestamp: i64,
 }
 
 #[derive(Accounts)]
@@ -118,21 +125,34 @@ pub struct CreateService<'info> {
 
 #[derive(Accounts)]
 // #[instruction(title: String, expected_amount: u64)]
-pub struct CreateTransaction<'info> {
+pub struct InitializeInvoice<'info> {
     #[account(mut)]
     pub service_account: Account<'info, Service>,
     #[account(
     init,
     seeds = [
     service_account.key().as_ref(),
-    b"transaction".as_ref(),
-    &[service_account.transaction_count as u8].as_ref()
+    b"invoice".as_ref(),
+    service_period.key().as_ref()
     ],
     bump,
     payer = authority,
     space = 1000
     )]
-    pub transaction_account: Account<'info, Transaction>,
+    pub transaction_account: Account<'info, Invoice>,
+    pub service_period: Account<'info, ServicePeriod>,
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    pub system_program: Program<'info, System>
+}
+
+#[derive(Accounts)]
+// #[instruction(title: String, expected_amount: u64)]
+pub struct UpdateInvoice<'info> {
+    #[account(mut)]
+    pub service_account: Account<'info, Service>,
+    #[account(mut)]
+    pub transaction_account: Account<'info, Invoice>,
     #[account(mut)]
     pub authority: Signer<'info>,
     pub system_program: Program<'info, System>
@@ -140,9 +160,10 @@ pub struct CreateTransaction<'info> {
 
 
 #[account]
-pub struct Transaction {
+pub struct Invoice {
     pub user_wallet: Pubkey,
     pub is_paid: bool,
+    pub expire_timestamp: i64,
 }
 
 

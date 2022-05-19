@@ -36,7 +36,7 @@ const Navigation = () => {
   }
 
   return (
-    <Box w="100%">
+    <Box w="100%" minW="100%">
       <Flex
         color={useColorModeValue("gray.600", "white")}
         minH={"60px"}
@@ -48,6 +48,8 @@ const Navigation = () => {
         justifyContent="center"
         backgroundColor="rgba(255, 255, 255, 0.4)"
         backdropFilter="saturate(180%) blur(5px)"
+        w="100%"
+        minW="100%"
       >
         <Flex
           flex={{ base: 1, md: "auto" }}
@@ -147,11 +149,6 @@ const NAV_ITEMS: Array<NavItem> = [
     label: "Integrations",
     href: "/integrations",
     icon: FiPlusCircle,
-  },
-  {
-    label: "Transactions",
-    href: "/transactions",
-    icon: FiDollarSign,
   },
   {
     label: "Settings",

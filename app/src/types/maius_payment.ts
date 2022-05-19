@@ -47,6 +47,41 @@ export type MaiusPayment = {
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "createService",
+      "accounts": [
+        {
+          "name": "merchantAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "serviceAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "expectedAmount",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -70,6 +105,26 @@ export type MaiusPayment = {
           {
             "name": "authority",
             "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "service",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "expectedAmount",
+            "type": "u64"
           }
         ]
       }
@@ -126,6 +181,41 @@ export const IDL: MaiusPayment = {
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "createService",
+      "accounts": [
+        {
+          "name": "merchantAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "serviceAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "expectedAmount",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -149,6 +239,26 @@ export const IDL: MaiusPayment = {
           {
             "name": "authority",
             "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "service",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "expectedAmount",
+            "type": "u64"
           }
         ]
       }

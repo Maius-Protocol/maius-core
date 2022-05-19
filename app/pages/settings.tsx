@@ -12,12 +12,13 @@ import {
   Stack,
   Container,
   Heading,
-  Text,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import withAuth from "../src/hooks/withAuth";
 import { useApp } from "../src/hooks/useAppProvider";
+import Lottie from "lottie-react";
+import animation from "../src/components/41375-laptop-rocket.json";
 const SettingsPage = () => {
   useEffect(() => {}, []);
   const [currentMerchantData, setCurrentMerchantData] = useState<any>();
@@ -116,6 +117,8 @@ const SettingsPage = () => {
           >
             Your account has not been activated
           </Heading>
+          <Lottie animationData={animation} />
+
           <Button
             onClick={initializeMerchant}
             ml={2}
@@ -157,7 +160,7 @@ const SettingsPage = () => {
                 type="text"
                 {...register("logo", { required: true })}
               />
-              <FormErrorMessage>{errors.name}</FormErrorMessage>
+              <FormErrorMessage>{errors.logo}</FormErrorMessage>
             </FormControl>
             <Stack spacing={10}>
               <Button

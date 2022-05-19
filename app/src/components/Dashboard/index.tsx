@@ -1,12 +1,11 @@
-import Sidebar from "../Sidebar/Sidebar";
-import { Button, Container, Flex, useToast } from "@chakra-ui/react";
+import { Button, Container, useToast } from "@chakra-ui/react";
 import { useApp } from "../../hooks/useAppProvider";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
 const Dashboard = () => {
-  const { program, provider, merchantAccount } = useApp();
+  const { program } = useApp();
   const { connection } = useConnection();
-  const { publicKey, signTransaction, sendTransaction } = useWallet();
+  const { sendTransaction } = useWallet();
   const toast = useToast();
 
   const testInitialize = async () => {

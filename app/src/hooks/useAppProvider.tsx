@@ -1,24 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { clusterApiUrl, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
+import * as anchor from "@project-serum/anchor";
 import { web3 } from "@project-serum/anchor";
 import idl from "../idl.json";
-import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
-import {
-  ConnectionProvider,
-  useConnection,
-  useWallet,
-  WalletProvider,
-} from "@solana/wallet-adapter-react";
-import {
-  WalletModalProvider,
-  WalletMultiButton,
-} from "@solana/wallet-adapter-react-ui";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
-import * as anchor from "@project-serum/anchor";
 import { MaiusPayment } from "../types/maius_payment";
 
 const { Keypair } = web3;
-const programID = new PublicKey(idl.metadata.address);
+export const programID = new PublicKey(idl.metadata.address);
 
 interface AppProviderProps {
   children: React.ReactNode;
@@ -60,7 +50,6 @@ const ChildProvider: React.FunctionComponent<AppProviderProps> = ({
     );
     setMerchantAccount(_merchantAccount);
   };
-  console.log(programID.toBase58());
 
   useEffect(() => {
     const _program: anchor.Program<MaiusPayment> = new anchor.Program(

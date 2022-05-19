@@ -26,6 +26,14 @@ pub mod maius_payment {
         merchant_account.logo = logo;
         Ok(())
     }
+
+    pub fn create_service(ctx: Context<CreateService>, title: String, expected_amount: u64) -> ProgramResult {
+        ctx.accounts.service_account.authority = *ctx.accounts.authority.to_account_info().key;
+        ctx.accounts.service_account.title = title;
+        ctx.accounts.service_account.expected_amount = expected_amount;
+        ctx.accounts.merchant_account.service_count += 1;
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -65,6 +73,37 @@ pub struct Merchant {
     pub title: String,
     pub logo: String,
     pub authority: Pubkey,
+}
+
+
+#[account]
+#[derive(Default)]
+pub struct Service {
+    pub authority: Pubkey,
+    pub title: String,
+    pub expected_amount: u64,
+}
+
+#[derive(Accounts)]
+#[instruction(title: String, expected_amount: u64)]
+pub struct CreateService<'info> {
+    #[account(mut)]
+    pub merchant_account: Account<'info, Merchant>,
+    #[account(
+    init,
+    seeds = [
+    b"service".as_ref(),
+    merchant_account.key().as_ref(),
+    &[merchant_account.service_count as u8].as_ref()
+    ],
+    bump,
+    payer = authority,
+    space = 1000
+    )]
+    pub service_account: Account<'info, Service>,
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    pub system_program: Program<'info, System>
 }
 
 

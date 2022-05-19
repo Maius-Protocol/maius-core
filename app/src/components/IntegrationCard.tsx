@@ -24,17 +24,20 @@ import {
   Divider,
   Alert,
 } from "@chakra-ui/react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { useApp } from "../hooks/useAppProvider";
 import React, { useEffect } from "react";
 import { BN } from "@project-serum/anchor";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useForm } from "react-hook-form";
+import { FiDollarSign } from "react-icons/fi";
+import { useRouter } from "next/router";
 
 const IntegrationCard = ({ index }) => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const { program, getServiceData, merchantAccount } = useApp();
+  const { getServiceData, merchantAccount } = useApp();
   const { data, isLoading } = useQuery(["service", index], () =>
     getServiceData(index)
   );
@@ -45,7 +48,12 @@ const IntegrationCard = ({ index }) => {
     formState: { errors },
   } = useForm();
 
-  useEffect(() => {}, [data?.data]);
+  const serviceAccountAddress = queryClient.getQueryData([
+    "service-account-address",
+    index,
+  ]);
+  console.log(serviceAccountAddress);
+  const paymentURL = `http://localhost:3000/payment?userID=USER_ID&merchantID=${merchantAccount?.toBase58()}&serviceID=${serviceAccountAddress}`;
 
   if (isLoading) {
     return <Spinner />;
@@ -84,8 +92,23 @@ const IntegrationCard = ({ index }) => {
               {parseInt(data.expectedAmount?.toString()) / LAMPORTS_PER_SOL} SOL
             </Text>
           </Stack>
-          <Button w="100%" mt={10} onClick={onOpen}>
+          <Button w="100%" mt={10} bg="blue.300" onClick={onOpen}>
             Create Payment URL
+          </Button>
+          <Button
+            w="100%"
+            mt={2}
+            onClick={() => {
+              router.push({
+                pathname: "/transactions",
+                query: {
+                  serviceID: index,
+                },
+              });
+            }}
+          >
+            <FiDollarSign />
+            Transactions History
           </Button>
         </Box>
       </Center>
@@ -111,9 +134,7 @@ const IntegrationCard = ({ index }) => {
               <Divider mt={8} />
               <FormControl mt={4}>
                 <FormLabel>Your payment URL template</FormLabel>
-                <Input
-                  value={`http://localhost:3000/payment?userID=USER_ID&merchantID=${merchantAccount?.toBase58()}&serviceID=`}
-                />
+                <Input value={paymentURL} />
 
                 <Alert bg="yellow.400" mt={3}>
                   Please replace <b style={{ margin: "0 6px" }}>USER_ID</b> with

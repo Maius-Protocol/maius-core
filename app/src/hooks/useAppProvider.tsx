@@ -6,7 +6,7 @@ import idl from "../idl.json";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
 import { MaiusPayment } from "../types/maius_payment";
-import { useQuery, UseQueryResult } from "react-query";
+import { useQuery, useQueryClient, UseQueryResult } from "react-query";
 
 const { Keypair } = web3;
 export const programID = new PublicKey(idl.metadata.address);
@@ -26,6 +26,7 @@ const AppContext = React.createContext<AppContextState | undefined>(undefined);
 const ChildProvider: React.FunctionComponent<AppProviderProps> = ({
   children,
 }: AppProviderProps) => {
+  const queryClient = useQueryClient();
   const [merchantAccount, setMerchantAccount] = useState<
     PublicKey | undefined
   >();
@@ -37,7 +38,6 @@ const ChildProvider: React.FunctionComponent<AppProviderProps> = ({
     program.account.merchant.fetch(merchantAccount?.toBase58()!)
   );
 
-  const {} = useQuery();
   const router = useRouter();
   const wallet = useWallet();
   const connection = useConnection();
@@ -67,6 +67,10 @@ const ChildProvider: React.FunctionComponent<AppProviderProps> = ({
       ],
       programID
     );
+    queryClient.setQueryData(["service-account-address", index], () => {
+      return _serviceAccount?.toBase58();
+    });
+
     return _serviceAccount;
   };
 

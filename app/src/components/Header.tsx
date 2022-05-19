@@ -20,14 +20,20 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import React from "react";
 import { FiDollarSign, FiHome, FiPlusCircle, FiSettings } from "react-icons/fi";
 import CurrentBalance from "./Header/CurrentBalance";
+import { useRouter } from "next/router";
 
 const Navigation = () => {
+  const router = useRouter();
   const { isOpen, onToggle } = useDisclosure();
   const wallet = useWallet();
 
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
   const popoverContentBgColor = useColorModeValue("white", "gray.800");
+
+  if (router.pathname === "/payment") {
+    return <></>;
+  }
 
   return (
     <Box w="100%">

@@ -82,6 +82,32 @@ export type MaiusPayment = {
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "createTransaction",
+      "accounts": [
+        {
+          "name": "serviceAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "transactionAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -115,6 +141,10 @@ export type MaiusPayment = {
         "kind": "struct",
         "fields": [
           {
+            "name": "transactionCount",
+            "type": "u8"
+          },
+          {
             "name": "authority",
             "type": "publicKey"
           },
@@ -125,6 +155,22 @@ export type MaiusPayment = {
           {
             "name": "expectedAmount",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "transaction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "userWallet",
+            "type": "publicKey"
+          },
+          {
+            "name": "isPaid",
+            "type": "bool"
           }
         ]
       }
@@ -216,6 +262,32 @@ export const IDL: MaiusPayment = {
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "createTransaction",
+      "accounts": [
+        {
+          "name": "serviceAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "transactionAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -249,6 +321,10 @@ export const IDL: MaiusPayment = {
         "kind": "struct",
         "fields": [
           {
+            "name": "transactionCount",
+            "type": "u8"
+          },
+          {
             "name": "authority",
             "type": "publicKey"
           },
@@ -259,6 +335,22 @@ export const IDL: MaiusPayment = {
           {
             "name": "expectedAmount",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "transaction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "userWallet",
+            "type": "publicKey"
+          },
+          {
+            "name": "isPaid",
+            "type": "bool"
           }
         ]
       }

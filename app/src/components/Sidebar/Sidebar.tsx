@@ -26,7 +26,6 @@ interface LinkItemProps {
 const LinkItems: Array<LinkItemProps> = [
   { name: "Dashboard", icon: FiHome, url: "/" },
   { name: "Integrations", icon: FiPlusCircle, url: "/services" },
-  { name: "Transactions", icon: FiDollarSign, url: "/transactions" },
 ];
 
 const Sidebar = () => {

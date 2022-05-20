@@ -46,7 +46,6 @@ pub mod maius_payment {
 
     
     pub fn tranfer_a_to_b(ctx: Context<Initialize>) -> ProgramResult {
-        
         Ok(())
     }
 
@@ -73,6 +72,7 @@ pub mod maius_payment {
             invoice.is_paid = true;
             
         }
+
         Ok(())
     }
 }
@@ -155,8 +155,8 @@ pub struct InitializeInvoice<'info> {
     service_account.key().as_ref(),
     b"invoice".as_ref(),
     authority.key().as_ref(),
-    get_28th_day_of_current_month().date().month(),
-    get_28th_day_of_current_month().date().year() % 2000,
+    u32::to_be_bytes(get_28th_day_of_current_month().date().month()).as_ref(),
+    u32::to_be_bytes((get_28th_day_of_current_month().date().year() % 2000) as u32).as_ref()
     ],
     bump,
     payer = authority,

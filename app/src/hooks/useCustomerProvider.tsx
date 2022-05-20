@@ -51,7 +51,8 @@ const CustomerProvider = ({ children }) => {
         Buffer.from(base58_to_binary(serviceID)),
         Buffer.from("invoice"),
         Buffer.from(base58_to_binary(userID)),
-        // new anchor.BN(get28DateOfMonth())?.toArrayLike(Buffer),
+        new anchor.BN(5)?.toArrayLike(Buffer),
+        new anchor.BN(2022)?.toArrayLike(Buffer),
       ],
       programID
     );

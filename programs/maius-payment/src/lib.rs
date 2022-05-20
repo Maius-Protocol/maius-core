@@ -37,9 +37,10 @@ pub mod maius_payment {
     }
 
     pub fn initialize_invoice(ctx: Context<InitializeInvoice>) -> ProgramResult {
-        ctx.accounts.invoice_account.user_wallet = *ctx.accounts.authority.to_account_info().key;
-        ctx.accounts.service_account.subscription_accounts.push(ctx.accounts.invoice_account.user_wallet);
-        ctx.accounts.invoice_account.is_paid = false;
+        // ctx.accounts.invoice_account.user_wallet = *ctx.accounts.authority.to_account_info().key;
+        // ctx.accounts.service_account.subscription_accounts.push(ctx.accounts.invoice_account.user_wallet);
+        // ctx.accounts.invoice_account.is_paid = false;
+
         Ok(())
     }
 
@@ -154,7 +155,8 @@ pub struct InitializeInvoice<'info> {
     service_account.key().as_ref(),
     b"invoice".as_ref(),
     authority.key().as_ref(),
-    &[get_28th_day_of_current_month().try_into().unwrap()]
+    get_28th_day_of_current_month().date().month(),
+    get_28th_day_of_current_month().date().year() % 2000,
     ],
     bump,
     payer = authority,
@@ -186,19 +188,19 @@ pub struct Invoice {
     pub is_paid: bool,
 }
 
-pub fn get_28th_day_of_current_month() -> i64 {
+pub fn get_28th_day_of_current_month() -> NaiveDateTime {
     let current_timestamp = Clock::get().unwrap().unix_timestamp;
     let current_date_time = NaiveDateTime::from_timestamp(current_timestamp, 0).date();
     let current_year = current_date_time.year();
     let current_month = current_date_time.month();
     let date_time: NaiveDateTime = NaiveDate::from_ymd(current_year, current_month, 28).and_hms(0, 0, 0);
-    return date_time.timestamp();
+    return date_time;
 }
 
 #[error_code]
 pub enum MyError {
     #[msg("This is an error message clients will automatically display")]
-    amountExceed,
+    amount_exceed,
 }
 
 

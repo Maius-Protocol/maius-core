@@ -213,6 +213,13 @@ export type MaiusPayment = {
         ]
       }
     }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "amountExceed",
+      "msg": "This is an error message clients will automatically display"
+    }
   ]
 };
 
@@ -430,6 +437,13 @@ export const IDL: MaiusPayment = {
           }
         ]
       }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "amountExceed",
+      "msg": "This is an error message clients will automatically display"
     }
   ]
 };

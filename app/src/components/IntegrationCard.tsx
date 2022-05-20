@@ -26,7 +26,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery, useQueryClient } from "react-query";
 import { useApp } from "../hooks/useAppProvider";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BN } from "@project-serum/anchor";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useForm } from "react-hook-form";
@@ -34,6 +34,7 @@ import { FiDollarSign } from "react-icons/fi";
 import { useRouter } from "next/router";
 
 const IntegrationCard = ({ index }) => {
+  const [inputUserAddress, setInputUserAddress] = useState('')
   const queryClient = useQueryClient();
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -52,7 +53,8 @@ const IntegrationCard = ({ index }) => {
     "service-account-address",
     index,
   ]);
-  const paymentURL = `http://localhost:3000/payment?userID=USER_ID&merchantID=${merchantAccount?.toBase58()}&serviceID=${serviceAccountAddress}`;
+  const paymentURL = (USER_ID: string) => `http://localhost:3000/payment?userID=${USER_ID}&merchantID=${merchantAccount?.toBase58()}&serviceID=${serviceAccountAddress}`;
+
 
   if (isLoading) {
     return <Spinner />;
@@ -133,7 +135,7 @@ const IntegrationCard = ({ index }) => {
               <Divider mt={8} />
               <FormControl mt={4}>
                 <FormLabel>Your payment URL template</FormLabel>
-                <Input value={paymentURL} />
+                <Input value={paymentURL('USER_ID')} />
 
                 <Alert bg="yellow.400" mt={3}>
                   Please replace <b style={{ margin: "0 6px" }}>USER_ID</b> with
@@ -146,7 +148,13 @@ const IntegrationCard = ({ index }) => {
               <FormControl mt={4}>
                 <FormLabel>Demo</FormLabel>
                 <FormControl mt={4}>
-                  <FormLabel>Enter an example wallet</FormLabel>
+                  <FormLabel>Enter example wallet address</FormLabel>
+                  <Input onChange={(e) => setInputUserAddress(e.currentTarget.value)} value={inputUserAddress} />
+                </FormControl>
+
+                <FormControl mt={4}>
+                  <FormLabel>Enter example wallet address</FormLabel>
+                  <Input value={paymentURL(inputUserAddress)} />
                 </FormControl>
               </FormControl>
             </ModalBody>

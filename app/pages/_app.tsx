@@ -19,6 +19,8 @@ import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import React from "react";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { useRouter } from "next/router";
+import CustomerProvider from "../src/hooks/useCustomerProvider";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -31,6 +33,19 @@ const queryClient = new QueryClient({
 const wallets = [new PhantomWalletAdapter()];
 const ENDPOINT = "http://127.0.0.1:8899";
 
+const ChildAppWrapper: React.FunctionComponent = ({ children }) => {
+  const router = useRouter();
+  if (router.pathname === "/payment") {
+    return <CustomerProvider>{children}</CustomerProvider>;
+  }
+
+  if (router.pathname !== "/payment") {
+    return <AppProvider>{children}</AppProvider>;
+  }
+
+  return <></>;
+};
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
@@ -41,7 +56,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ConnectionProvider endpoint={ENDPOINT}>
           <WalletProvider wallets={wallets} autoConnect>
             <WalletModalProvider>
-              <AppProvider>
+              <ChildAppWrapper>
                 <>
                   <Flex top={0} as="header" position="fixed" w="100%">
                     <Navigation />
@@ -56,8 +71,8 @@ function MyApp({ Component, pageProps }: AppProps) {
                     <Component {...pageProps} />
                   </Container>
                 </>
-                <ReactQueryDevtools initialIsOpen={false} />
-              </AppProvider>
+              </ChildAppWrapper>
+              <ReactQueryDevtools initialIsOpen={false} />
             </WalletModalProvider>
           </WalletProvider>
         </ConnectionProvider>

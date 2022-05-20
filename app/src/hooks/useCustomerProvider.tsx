@@ -11,6 +11,7 @@ import { useToast } from "@chakra-ui/react";
 import { getTime, setDate } from "date-fns";
 import { BN, web3 } from "@project-serum/anchor";
 import { base58_to_binary } from "base58-js";
+import { publicKey } from "@project-serum/anchor/dist/cjs/utils";
 
 interface CustomerProviderProps {
   children: React.ReactNode;
@@ -31,6 +32,7 @@ const CustomerProvider = ({ children }) => {
     anchor.Program<MaiusPayment> | undefined
   >();
   const wallet = useWallet();
+  const { sendTransaction } = wallet;
   const toast = useToast();
   const connection = useConnection();
   const provider = new anchor.AnchorProvider(
@@ -48,8 +50,8 @@ const CustomerProvider = ({ children }) => {
       [
         Buffer.from(base58_to_binary(serviceID)),
         Buffer.from("invoice"),
-        new anchor.BN(get28DateOfMonth())?.toArrayLike(Buffer),
         Buffer.from(base58_to_binary(userID)),
+        // new anchor.BN(get28DateOfMonth())?.toArrayLike(Buffer),
       ],
       programID
     );
@@ -62,11 +64,14 @@ const CustomerProvider = ({ children }) => {
       const tx = await program.methods
         .initializeInvoice()
         .accounts({
+          serviceAccount: new PublicKey(serviceID),
           invoiceAccount: invoiceAccount,
+          authority: wallet.publicKey!,
           systemProgram: web3.SystemProgram.programId,
         })
         .transaction();
-      await sendTransaction(tx, connection, {});
+      console.log(tx);
+      await sendTransaction(tx, connection.connection);
       // await currentMerchantData.refetch();
     } catch (e: any) {
       toast({
@@ -88,7 +93,9 @@ const CustomerProvider = ({ children }) => {
   }, []);
 
   return (
-    <CustomerContext.Provider value={{ program, getInvoiceAccountAddress }}>
+    <CustomerContext.Provider
+      value={{ program, getInvoiceAccountAddress, initializeInvoice }}
+    >
       {children}
     </CustomerContext.Provider>
   );

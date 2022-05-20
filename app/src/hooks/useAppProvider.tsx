@@ -44,10 +44,7 @@ const ChildProvider: React.FunctionComponent<AppProviderProps> = ({
   const provider = new anchor.AnchorProvider(
     connection.connection,
     wallet.wallet,
-    {
-      preflightCommitment: "finalized",
-      commitment: "finalized",
-    }
+    anchor.AnchorProvider.defaultOptions()
   );
 
   const initData = async () => {

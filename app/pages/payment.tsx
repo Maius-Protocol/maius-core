@@ -22,7 +22,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 
 const Payment = () => {
   const wallet = useWallet();
-  const { program, getInvoiceAccountAddress } = useCustomerApp();
+  const { program, initializeInvoice } = useCustomerApp();
   const router = useRouter();
   const { merchantID, serviceID } = router.query;
 
@@ -43,9 +43,9 @@ const Payment = () => {
 
   const isLoading = isLoadingMerchantData || isLoadingService;
 
-  useEffect(() => {
-    getInvoiceAccountAddress();
-  }, [program]);
+  const startPayment = async () => {
+    initializeInvoice();
+  };
 
   if (isLoading) {
     return (
@@ -62,7 +62,7 @@ const Payment = () => {
         <Box
           role={"group"}
           p={6}
-          maxW={"330px"}
+          maxW={"420px"}
           w={"full"}
           bg={useColorModeValue("white", "gray.800")}
           boxShadow={"2xl"}
@@ -96,7 +96,7 @@ const Payment = () => {
             <Image
               rounded={"lg"}
               height={230}
-              width={282}
+              width={390}
               objectFit={"cover"}
               src={merchantData?.logo}
             />
@@ -112,10 +112,11 @@ const Payment = () => {
             <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={500}>
               {serviceData?.title}
             </Heading>
-            <Stack direction={"row"} align={"center"}>
+            <Stack direction={"column"} align={"center"}>
               <Text fontWeight={800} fontSize={"xl"}>
                 {(serviceData?.expectedAmount || 0) / LAMPORTS_PER_SOL} SOL
               </Text>
+              <Text>Billed monthly, on 28th of current month</Text>
             </Stack>
           </Stack>
         </Box>
@@ -133,9 +134,13 @@ const Payment = () => {
             your privacy
           </Text>
 
-          <Button mb={6} w={360} size="lg">
-            Confirm Payment with Wallet B <ArrowForwardIcon />
-          </Button>
+          {wallet.connected && (
+            <>
+              <Button mb={6} w={360} size="lg" onClick={startPayment}>
+                Confirm Payment with Wallet B <ArrowForwardIcon />
+              </Button>
+            </>
+          )}
 
           <div style={{ opacity: wallet.connected ? 0.5 : 1.0 }}>
             <WalletMultiButton />

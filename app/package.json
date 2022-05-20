@@ -21,6 +21,8 @@
     "@solana/wallet-adapter-wallets": "^0.16.1",
     "@solana/web3.js": "^1.42.0",
     "axios": "^0.27.2",
+    "base58-js": "^1.0.0",
+    "date-fns": "^2.28.0",
     "encodeurl": "^1.0.2",
     "framer-motion": "^6",
     "lodash": "^4.17.21",

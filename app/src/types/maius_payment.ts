@@ -108,6 +108,42 @@ export type MaiusPayment = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "tranferAToB",
+      "accounts": [],
+      "args": []
+    },
+    {
+      "name": "transferBToWallet",
+      "accounts": [
+        {
+          "name": "merchantAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "serviceAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "invoiceAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "walletB",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -280,6 +316,42 @@ export const IDL: MaiusPayment = {
         },
         {
           "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "tranferAToB",
+      "accounts": [],
+      "args": []
+    },
+    {
+      "name": "transferBToWallet",
+      "accounts": [
+        {
+          "name": "merchantAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "serviceAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "invoiceAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "walletB",
           "isMut": true,
           "isSigner": true
         },

@@ -4,6 +4,7 @@ use chrono::{Datelike, NaiveDate, NaiveDateTime};
 
 pub mod schema;
 pub mod instructions;
+use anchor_lang::solana_program::native_token::LAMPORTS_PER_SOL;
 
 declare_id!("oBqg1ZeS6J5QJKXMEYmxNGF4CCe3B1rYCJ4ZSkuYXHT");
 
@@ -39,6 +40,38 @@ pub mod maius_payment {
         ctx.accounts.invoice_account.user_wallet = *ctx.accounts.authority.to_account_info().key;
         ctx.accounts.service_account.subscription_accounts.push(ctx.accounts.invoice_account.user_wallet);
         ctx.accounts.invoice_account.is_paid = false;
+        Ok(())
+    }
+
+    
+    pub fn tranfer_a_to_b(ctx: Context<Initialize>) -> ProgramResult {
+        
+        Ok(())
+    }
+
+    pub fn transfer_b_to_wallet(ctx: Context<UpdateInvoice>) -> ProgramResult  {
+        let wallet_b = &ctx.accounts.wallet_b;
+        let invoice = &mut ctx.accounts.invoice_account;
+        let expected_amount = ctx.accounts.service_account.expected_amount;
+        let merchant_account = &ctx.accounts.merchant_account;
+        let wallet_b_sol: u64 = ctx.accounts.wallet_b.try_lamports().unwrap() / LAMPORTS_PER_SOL;
+    
+        if wallet_b_sol >= expected_amount {
+            let ix_sol_transfer = anchor_lang::solana_program::system_instruction::transfer(
+                &wallet_b.key(),
+                &merchant_account.key(),
+                expected_amount,
+            );
+        
+            anchor_lang::solana_program::program::invoke(
+                &ix_sol_transfer,
+                &[wallet_b.to_account_info(), merchant_account.to_account_info()]
+
+            )?;
+            
+            invoice.is_paid = true;
+            
+        }
         Ok(())
     }
 }
@@ -137,14 +170,15 @@ pub struct InitializeInvoice<'info> {
 // #[instruction(title: String, expected_amount: u64)]
 pub struct UpdateInvoice<'info> {
     #[account(mut)]
+    pub merchant_account: Account<'info, Merchant>,
+    #[account(mut)]
     pub service_account: Account<'info, Service>,
     #[account(mut)]
     pub invoice_account: Account<'info, Invoice>,
     #[account(mut)]
-    pub authority: Signer<'info>,
+    pub wallet_b: Signer<'info>,
     pub system_program: Program<'info, System>
 }
-
 
 #[account]
 pub struct Invoice {
@@ -159,6 +193,12 @@ pub fn get_28th_day_of_current_month() -> i64 {
     let current_month = current_date_time.month();
     let date_time: NaiveDateTime = NaiveDate::from_ymd(current_year, current_month, 28).and_hms(0, 0, 0);
     return date_time.timestamp();
+}
+
+#[error_code]
+pub enum MyError {
+    #[msg("This is an error message clients will automatically display")]
+    amountExceed,
 }
 
 

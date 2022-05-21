@@ -3,11 +3,6 @@ export type MaiusPayment = {
   "name": "maius_payment",
   "instructions": [
     {
-      "name": "initialize",
-      "accounts": [],
-      "args": []
-    },
-    {
       "name": "initializeMerchant",
       "accounts": [
         {
@@ -111,8 +106,24 @@ export type MaiusPayment = {
     },
     {
       "name": "tranferAToB",
-      "accounts": [],
-      "args": []
+      "accounts": [
+        {
+          "name": "walletA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "walletB",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "transferBToWallet",
@@ -228,11 +239,6 @@ export const IDL: MaiusPayment = {
   "name": "maius_payment",
   "instructions": [
     {
-      "name": "initialize",
-      "accounts": [],
-      "args": []
-    },
-    {
       "name": "initializeMerchant",
       "accounts": [
         {
@@ -336,8 +342,24 @@ export const IDL: MaiusPayment = {
     },
     {
       "name": "tranferAToB",
-      "accounts": [],
-      "args": []
+      "accounts": [
+        {
+          "name": "walletA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "walletB",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "transferBToWallet",

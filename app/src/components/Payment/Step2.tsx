@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Heading, Tag, useToast } from "@chakra-ui/react";
 import { STEPS } from "../../../pages/payment";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import React from "react";
+import React, { useEffect } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useCustomerApp } from "../../hooks/useCustomerProvider";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -13,8 +13,22 @@ import { Text } from "@chakra-ui/react";
 import { web3 } from "@project-serum/anchor";
 
 const Step2 = ({ setCurrentStep }) => {
-  const { program, merchant, serviceData, merchantID, serviceID, service } =
-    useCustomerApp();
+  const {
+    program,
+    userID,
+    merchant,
+    serviceData,
+    merchantID,
+    serviceID,
+    service,
+    customerServiceAddressQuery,
+    customerServiceAccountQuery,
+    invoiceAddressQuery,
+    invoiceAccountQuery,
+    createCustomerServiceAccountQuery,
+    createInvoiceAccountQuery,
+    transferWalletBToMerchantQuery,
+  } = useCustomerApp();
   const wallet = useWallet();
 
   const { sendTransaction } = wallet;
@@ -25,182 +39,28 @@ const Step2 = ({ setCurrentStep }) => {
   const {
     data: customerServiceAddress,
     isLoading: isGettingCustomerServiceAddress,
-  } = useQuery("customer-service-account-address", async () => {
-    const [_customerServiceAddress] =
-      await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from("customer_service_account"),
-          new PublicKey(serviceID)?.toBuffer(),
-          walletB?.toBuffer(),
-        ],
-        programID
-      );
-    return _customerServiceAddress;
-  });
+  } = customerServiceAddressQuery;
   const {
     data: existedServiceAccount,
-    refetch: refetchServiceAccount,
     isLoading: isFindingExistedServiceAccount,
-  } = useQuery(
-    "customer-service-account",
-    async () => {
-      return await program.account.customerServices.fetch(
-        customerServiceAddress!
-      );
-    },
-    { retry: false, enabled: !!customerServiceAddress }
-  );
+  } = customerServiceAccountQuery;
 
-  const {
-    data: invoiceAccountAddress,
-    isLoading: isFindingInvoiceAccountAddress,
-  } = useQuery("invoice-account-address", async () => {
-    const [_invoiceAddress] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        new PublicKey(serviceID)?.toBuffer(),
-        Buffer.from("invoice"),
-        walletB?.toBuffer(),
-        new anchor.BN(existedServiceAccount?.invoiceCount || 0)?.toArrayLike(
-          Buffer
-        ),
-      ],
-      programID
-    );
-    return _invoiceAddress;
-  });
+  const { isLoading: isFindingInvoiceAccountAddress } = invoiceAddressQuery;
 
-  const {
-    data: existedInvoice,
-    refetch: refetchInvoice,
-    isLoading: isGettingExistedInvoice,
-  } = useQuery(
-    "invoice-account",
-    async () => {
-      return await program.account.invoice.fetch(invoiceAccountAddress!);
-    },
-    { retry: false, enabled: !!invoiceAccountAddress }
-  );
+  const { data: existedInvoice, isLoading: isGettingExistedInvoice } =
+    invoiceAccountQuery;
 
   const {
     mutateAsync: initializeCustomerServiceAccount,
     isLoading: isCreatingCustomerServiceAccount,
-  } = useMutation(
-    async (customerServiceAccountAddress: PublicKey) => {
-      const tx = await program.methods
-        .initializeCustomerServiceAccount()
-        .accounts({
-          serviceAccount: new PublicKey(serviceID),
-          customerServicesAccount: customerServiceAccountAddress,
-          authority: walletB!,
-        })
-        .transaction();
-      await sendTransaction(tx, connection);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      await refetchServiceAccount();
-    },
-    {
-      onError: (e) => {
-        toast({
-          title: "Error",
-          description: e?.message?.toString(),
-          status: "error",
-          position: "bottom-left",
-        });
-      },
-      onSuccess: () => {
-        toast({
-          title: "Create service account success",
-          status: "success",
-          position: "bottom-left",
-        });
-      },
-    }
-  );
-
-  console.log();
+  } = createCustomerServiceAccountQuery;
   const {
     mutateAsync: initializeInvoiceAccount,
     isLoading: isCreatingInvoiceAccount,
-  } = useMutation(
-    async () => {
-      const [_invoiceAddress] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          new PublicKey(serviceID)?.toBuffer(),
-          Buffer.from("invoice"),
-          walletB?.toBuffer(),
-          new anchor.BN(existedServiceAccount?.invoiceCount || 0)?.toArrayLike(
-            Buffer
-          ),
-        ],
-        programID
-      );
-      console.log(_invoiceAddress);
-      const tx = await program.methods
-        .initializeInvoice()
-        .accounts({
-          serviceAccount: new PublicKey(serviceID),
-          customerServicesAccount: customerServiceAddress,
-          invoiceAccount: _invoiceAddress,
-          customerAuthority: walletB!,
-        })
-        .transaction();
-      await sendTransaction(tx, connection);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      await refetchInvoice();
-    },
-    {
-      onError: (e) => {
-        toast({
-          title: "Error",
-          description: e?.message?.toString(),
-          status: "error",
-          position: "bottom-left",
-        });
-      },
-      onSuccess: () => {
-        toast({
-          title: "Create invoice account success",
-          status: "success",
-          position: "bottom-left",
-        });
-      },
-    }
-  );
+  } = createInvoiceAccountQuery;
 
-  const { mutateAsync: transferBToMerchant, isLoading: isPaying } = useMutation(
-    async () => {
-      const tx = await program.methods
-        .transferBToWallet()
-        .accounts({
-          merchantAccount: new PublicKey(merchantID),
-          serviceAccount: new PublicKey(serviceID),
-          invoiceAccount: invoiceAccountAddress!,
-          walletB: walletB!,
-          systemProgram: web3.SystemProgram.programId,
-        })
-        .transaction();
-      await sendTransaction(tx, connection);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      await refetchInvoice();
-    },
-    {
-      onError: (e) => {
-        toast({
-          title: "Error",
-          description: e?.message?.toString(),
-          status: "error",
-          position: "bottom-left",
-        });
-      },
-      onSuccess: () => {
-        toast({
-          title: "Tranfer B to Merchant Success",
-          status: "success",
-          position: "bottom-left",
-        });
-      },
-    }
-  );
+  const { mutateAsync: transferBToMerchant, isLoading: isPaying } =
+    transferWalletBToMerchantQuery;
 
   const isLoading =
     isFindingExistedServiceAccount ||
@@ -223,32 +83,43 @@ const Step2 = ({ setCurrentStep }) => {
       console.log("create customer service account");
       await initializeCustomerServiceAccount(customerServiceAddress);
     }
-    if (!existedInvoice) {
+    if (!existedInvoice || needCreateNewInvoice) {
       console.log("create invoice account");
       await initializeInvoiceAccount();
     }
     console.log("transfer b to merchant");
     await transferBToMerchant();
   };
+
+  const isPaid =
+    existedInvoice && existedInvoice?.isPaid && !needCreateNewInvoice;
+
+  useEffect(() => {
+    if (wallet.connected && wallet.publicKey?.toBase58() !== userID) {
+      wallet.disconnect();
+    }
+  }, [wallet]);
+
   return (
     <Box display="flex" flexDirection="column">
-      {(!existedInvoice || !existedInvoice?.isPaid) && (
-        <Button onClick={startPayment} isLoading={isLoading}>
+      {(!existedInvoice || !isPaid) && wallet.connected && (
+        <Button onClick={startPayment} mt={2} isLoading={isLoading}>
           {STEPS[1].message}
           <ArrowForwardIcon style={{ marginLeft: "8px" }} />
         </Button>
       )}
-      {existedInvoice && existedInvoice?.isPaid && (
+      {!wallet.connected && (
+        <Text mt={3}>Please connect to following wallet: {userID}</Text>
+      )}
+      {isPaid && (
         <>
-          <Heading>Enjoy your day.</Heading>
+          <Heading>Everything is ready.</Heading>
         </>
       )}
       <Divider my={4} />
-      {existedInvoice && (
+      {existedInvoice && !needCreateNewInvoice && (
         <Box display="flex" flexDirection="column" alignItems="center">
           <Box display="flex" flexDirection="row" alignItems="center">
-            <Text mr={4}>Current Invoice</Text>
-
             <Tag
               size="lg"
               variant="solid"
@@ -264,7 +135,7 @@ const Step2 = ({ setCurrentStep }) => {
             variant="solid"
             colorScheme="red"
           >
-            next payment: {format(expirationTimestamp, "HH:mm dd-MM-yyyy")}
+            next payment: {format(expirationTimestamp, "HH:mm:ss dd-MM-yyyy")}
           </Text>
         </Box>
       )}

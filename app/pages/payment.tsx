@@ -15,13 +15,15 @@ import {
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import CustomerProvider, {
   useCustomerApp,
 } from "../src/hooks/useCustomerProvider";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Step1 from "../src/components/Payment/Step1";
 import Step2 from "../src/components/Payment/Step2";
+import * as anchor from "@project-serum/anchor";
+import { programID } from "../src/hooks/useAppProvider";
 
 // Step 1: Chuyen tu vi A -> B (connect vi A)
 // Step 2: Initialize Invoice (connect vi B)
@@ -35,14 +37,34 @@ export const STEPS = [
 const Payment = () => {
   const [currentStep, setCurrentStep] = useState("step_2");
   const wallet = useWallet();
-  const { merchant, service } = useCustomerApp();
+  const {
+    merchant,
+    service,
+    customerServiceAccountQuery,
+    invoiceAccountQuery,
+  } = useCustomerApp();
   const { data: merchantData, isLoading: isLoadingMerchantData } = merchant;
   const { data: serviceData, isLoading: isLoadingService } = service;
   const router = useRouter();
   const { userID, merchantID, serviceID } = router.query;
 
-  const isLoading = isLoadingMerchantData || isLoadingService;
+  const { data: existedInvoice, isLoading: isGettingExistedInvoice } =
+    invoiceAccountQuery;
 
+  const isLoading =
+    isLoadingMerchantData || isLoadingService || isGettingExistedInvoice;
+
+  const needCreateNewInvoice =
+    new Date() > existedInvoice?.expirationTimestamp?.toNumber() * 1000;
+
+  const isPaid =
+    existedInvoice && existedInvoice?.isPaid && !needCreateNewInvoice;
+
+  useEffect(() => {
+    if (isPaid) {
+      setCurrentStep("step_2");
+    }
+  }, [isPaid]);
   if (isLoading) {
     return (
       <Center flexDirection="column">
@@ -127,6 +149,15 @@ const Payment = () => {
           flexDirection="column"
         >
           {!wallet.connected && <WalletMultiButton />}
+          {currentStep === "need_repayment" && (
+            <Button
+              onClick={() => {
+                setCurrentStep("step_1");
+              }}
+            >
+              Subscription ended. Start again?
+            </Button>
+          )}
           {currentStep === "step_1" && (
             <Step1 setCurrentStep={setCurrentStep} />
           )}
@@ -145,7 +176,7 @@ const Payment = () => {
               router.push("/");
             }}
           >
-            Cancel payment
+            Back to merchant
           </Button>
         </Box>
       </Center>

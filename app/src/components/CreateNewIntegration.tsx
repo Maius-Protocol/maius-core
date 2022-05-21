@@ -86,7 +86,7 @@ const CreateNewIntegration = () => {
     await createService({
       title: data.title,
       expected_amount: data.expected_amount * LAMPORTS_PER_SOL,
-      expiration_period: data.expiration_period * 24 * 60 * 60,
+      expiration_period: Math.round(data.expiration_period * 24 * 60 * 60),
     });
   };
 

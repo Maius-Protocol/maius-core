@@ -12,10 +12,6 @@ declare_id!("oBqg1ZeS6J5QJKXMEYmxNGF4CCe3B1rYCJ4ZSkuYXHT");
 pub mod maius_payment {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        Ok(())
-    }
-
     pub fn initialize_merchant(ctx: Context<InitializeMerchant>) -> ProgramResult {
         ctx.accounts.merchant_account.authority = *ctx.accounts.user.to_account_info().key;
         Ok(())
@@ -45,7 +41,21 @@ pub mod maius_payment {
     }
 
     
-    pub fn tranfer_a_to_b(ctx: Context<Initialize>) -> ProgramResult {
+    pub fn tranfer_a_to_b(ctx: Context<TransferAToB>, amount: u64) -> Result<()> {
+        let wallet_a = &ctx.accounts.wallet_a;
+        let wallet_b = &ctx.accounts.wallet_b;
+
+        let ix_sol_transfer = anchor_lang::solana_program::system_instruction::transfer(
+            &wallet_a.key(),
+            &wallet_b.key(),
+            amount,
+        );
+    
+        anchor_lang::solana_program::program::invoke(
+            &ix_sol_transfer,
+            &[wallet_a.to_account_info(), wallet_b.to_account_info()]
+        )?;
+        
         Ok(())
     }
 
@@ -78,7 +88,15 @@ pub mod maius_payment {
 }
 
 #[derive(Accounts)]
-pub struct Initialize {}
+#[instruction(amount: u64)]
+pub struct TransferAToB<'info> {
+    /// CHECK:
+    #[account(mut)]
+    pub wallet_a: AccountInfo<'info>,
+    /// CHECK:
+    #[account(mut)]
+    pub wallet_b: AccountInfo<'info>,
+}
 
 #[derive(Accounts)]
 pub struct InitializeMerchant<'info> {

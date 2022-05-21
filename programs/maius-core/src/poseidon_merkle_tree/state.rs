@@ -1,12 +1,25 @@
 use crate::utils::config::{ENCRYPTED_UTXOS_LENGTH, MERKLE_TREE_ACCOUNT_TYPE};
-use arrayref::{array_mut_ref, array_ref, array_refs, mut_array_refs};
-use byteorder::{ByteOrder, LittleEndian};
-use solana_program::{
-    msg,
-    program_error::ProgramError,
-    program_pack::{IsInitialized, Pack, Sealed},
-};
-use std::convert::TryInto;
+use anchor_lang::prelude::*;
+use solana_program::program_pack::{IsInitialized, Pack, Sealed};
+
+#[account]
+pub struct MerkleTree {
+    pub levels: usize,
+    pub filled_subtrees: Vec<Vec<u8>>,
+    pub current_root_index: usize,
+    pub next_index: usize,
+    pub root_history_size: usize,
+    pub roots: Vec<u8>,
+    pub current_total_deposits: u64,
+    pub inserted_leaf: bool,
+    pub inserted_root: bool,
+    pub time_locked: u64,
+    pub pubkey_locked: Vec<u8>,
+}
+
+impl MerkleTree {
+    pub const SIZE: usize = 8 + 8 + 576 + 8;
+}
 
 
 #[allow(unused_variables)]

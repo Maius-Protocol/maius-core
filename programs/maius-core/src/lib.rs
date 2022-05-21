@@ -4,14 +4,14 @@ use anchor_lang::prelude::*;
 use solana_program::entrypoint::ProgramResult;
 use solana_program::program_pack::Pack;
 
-pub mod groth16_verifier;
-pub mod nullifier_state;
-pub mod poseidon_merkle_tree;
-pub mod utils;
-pub mod instructions;
-pub mod processor;
-pub mod state;
-pub mod user_account;
+// pub mod groth16_verifier;
+// pub mod nullifier_state;
+// pub mod poseidon_merkle_tree;
+// pub mod utils;
+// pub mod instructions;
+// pub mod processor;
+// pub mod state;
+// pub mod user_account;
 
 declare_id!("5dxfd7Ao3aNGaYfPeysx9wpefH5QMu94SMxvAnRBCH6t");
 

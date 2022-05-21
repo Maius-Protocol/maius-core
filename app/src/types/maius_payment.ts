@@ -92,7 +92,7 @@ export type MaiusPayment = {
           "isSigner": false
         },
         {
-          "name": "customerAuthority",
+          "name": "authority",
           "isMut": true,
           "isSigner": true
         },
@@ -328,7 +328,7 @@ export const IDL: MaiusPayment = {
           "isSigner": false
         },
         {
-          "name": "customerAuthority",
+          "name": "authority",
           "isMut": true,
           "isSigner": true
         },

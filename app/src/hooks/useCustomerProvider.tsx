@@ -51,8 +51,8 @@ const CustomerProvider = ({ children }) => {
         Buffer.from(base58_to_binary(serviceID)),
         Buffer.from("invoice"),
         Buffer.from(base58_to_binary(userID)),
-        new anchor.BN(5)?.toArrayLike(Buffer),
-        new anchor.BN(2022)?.toArrayLike(Buffer),
+        // new anchor.BN(5)?.toArrayLike(Buffer),
+        // new anchor.BN(2022)?.toArrayLike(Buffer),
       ],
       programID
     );
@@ -67,7 +67,7 @@ const CustomerProvider = ({ children }) => {
         .accounts({
           serviceAccount: new PublicKey(serviceID),
           invoiceAccount: invoiceAccount,
-          authority: wallet.publicKey!,
+          customerAuthority: wallet.publicKey!,
           systemProgram: web3.SystemProgram.programId,
         })
         .transaction();

@@ -55,7 +55,7 @@ const Integrations = () => {
         justifyContent="space-between"
       >
         <Heading color={"gray.800"} lineHeight={1.1} fontSize={{ base: "3xl" }}>
-          Your Integrations
+          Your Plans
         </Heading>
 
         <CreateNewIntegration />

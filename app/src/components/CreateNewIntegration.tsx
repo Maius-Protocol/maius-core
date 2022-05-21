@@ -86,7 +86,7 @@ const CreateNewIntegration = () => {
     <>
       <div>
         <Button onClick={onOpen} ml={2} size="lg" bg="green.500" color="white">
-          Create New Service
+          Create New Plan
         </Button>
 
         <Button

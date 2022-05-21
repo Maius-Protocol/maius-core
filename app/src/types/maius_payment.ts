@@ -53,7 +53,7 @@ export type MaiusPayment = {
       "accounts": [
         {
           "name": "merchantAccount",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -88,7 +88,7 @@ export type MaiusPayment = {
       "accounts": [
         {
           "name": "serviceAccount",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -97,7 +97,7 @@ export type MaiusPayment = {
           "isSigner": false
         },
         {
-          "name": "authority",
+          "name": "customerAuthority",
           "isMut": true,
           "isSigner": true
         },
@@ -217,7 +217,7 @@ export type MaiusPayment = {
   "errors": [
     {
       "code": 6000,
-      "name": "amountExceed",
+      "name": "amount_exceed",
       "msg": "This is an error message clients will automatically display"
     }
   ]
@@ -278,7 +278,7 @@ export const IDL: MaiusPayment = {
       "accounts": [
         {
           "name": "merchantAccount",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -313,7 +313,7 @@ export const IDL: MaiusPayment = {
       "accounts": [
         {
           "name": "serviceAccount",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -322,7 +322,7 @@ export const IDL: MaiusPayment = {
           "isSigner": false
         },
         {
-          "name": "authority",
+          "name": "customerAuthority",
           "isMut": true,
           "isSigner": true
         },
@@ -442,7 +442,7 @@ export const IDL: MaiusPayment = {
   "errors": [
     {
       "code": 6000,
-      "name": "amountExceed",
+      "name": "amount_exceed",
       "msg": "This is an error message clients will automatically display"
     }
   ]

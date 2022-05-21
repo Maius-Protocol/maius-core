@@ -126,7 +126,6 @@ pub struct Service {
 #[derive(Accounts)]
 #[instruction(title: String, expected_amount: u64)]
 pub struct CreateService<'info> {
-    #[account(mut)]
     pub merchant_account: Account<'info, Merchant>,
     #[account(
     init,
@@ -147,24 +146,24 @@ pub struct CreateService<'info> {
 
 #[derive(Accounts)]
 pub struct InitializeInvoice<'info> {
-    #[account(mut)]
+    #[account(address=service_account.key())]
     pub service_account: Account<'info, Service>,
     #[account(
     init,
     seeds = [
     service_account.key().as_ref(),
     b"invoice".as_ref(),
-    authority.key().as_ref(),
-    u32::to_be_bytes(get_28th_day_of_current_month().date().month()).as_ref(),
-    u32::to_be_bytes((get_28th_day_of_current_month().date().year() % 2000) as u32).as_ref()
+    customer_authority.key().as_ref(),
+    // u32::to_be_bytes(get_28th_day_of_current_month().date().month()).as_ref(),
+    // u32::to_be_bytes((get_28th_day_of_current_month().date().year() % 2000) as u32).as_ref()
     ],
     bump,
-    payer = authority,
+    payer = customer_authority,
     space = 1000
     )]
     pub invoice_account: Account<'info, Invoice>,
     #[account(mut)]
-    pub authority: Signer<'info>,
+    pub customer_authority: Signer<'info>,
     pub system_program: Program<'info, System>
 }
 

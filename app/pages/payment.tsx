@@ -1,5 +1,5 @@
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -21,10 +21,11 @@ import CustomerProvider, {
 import { useWallet } from "@solana/wallet-adapter-react";
 
 const Payment = () => {
+  const [currentStep, setCurrentStep] = useState("step_2");
   const wallet = useWallet();
   const { program, initializeInvoice } = useCustomerApp();
   const router = useRouter();
-  const { merchantID, serviceID } = router.query;
+  const { userID, merchantID, serviceID } = router.query;
 
   const { data: merchantData, isRefetching: isLoadingMerchantData } = useQuery(
     ["merchant", merchantID],
@@ -46,6 +47,8 @@ const Payment = () => {
   const startPayment = async () => {
     initializeInvoice();
   };
+
+  const sameWallet = wallet.publicKey?.toBase58() === userID;
 
   if (isLoading) {
     return (
@@ -74,15 +77,16 @@ const Payment = () => {
             rounded={"lg"}
             mt={-12}
             pos={"relative"}
-            height={"230px"}
+            width={"240px"}
+            height={"240px"}
             _after={{
-              transition: "all .3s ease",
+              transition: "all .6s ease",
               content: '""',
               w: "full",
               h: "full",
               pos: "absolute",
               top: 5,
-              left: 0,
+              left: "25%",
               backgroundImage: `url(${merchantData?.logo})`,
               filter: "blur(15px)",
               zIndex: -1,
@@ -95,10 +99,11 @@ const Payment = () => {
           >
             <Image
               rounded={"lg"}
-              height={230}
-              width={390}
+              height={240}
+              width={240}
               objectFit={"cover"}
               src={merchantData?.logo}
+              style={{ position: "absolute", left: "25%" }}
             />
           </Box>
           <Stack pt={10} align={"center"}>
@@ -129,15 +134,35 @@ const Payment = () => {
         >
           <Text align="center" mb={4}>
             You are paying with Maius Gateway.
-            <br />
-            Please using different wallet with the ones logged in to protect
-            your privacy
           </Text>
 
-          {wallet.connected && (
+          {sameWallet && (
+            <>
+              <Button mb={4} w={360} size="lg">
+                Follow the notice below to continue
+              </Button>
+
+              <Text fontWeight="bold" color="red.600" textAlign="center" mb={6}>
+                You're using the same wallet that logged in{" "}
+                {merchantData?.title}.<br /> Please using different wallet that
+                having sufficient amount to protect your privacy
+              </Text>
+            </>
+          )}
+
+          {!sameWallet && currentStep === "step_1" && wallet.connected && (
+            <>
+              <Button mb={6} w={360} size="lg">
+                Transfer securely to {merchantData?.title} account{"  "}
+                <ArrowForwardIcon />
+              </Button>
+            </>
+          )}
+          {currentStep === "step_2" && wallet.connected && (
             <>
               <Button mb={6} w={360} size="lg" onClick={startPayment}>
-                Confirm Payment with Wallet B <ArrowForwardIcon />
+                Make payment{"  "}
+                <ArrowForwardIcon />
               </Button>
             </>
           )}
@@ -151,6 +176,10 @@ const Payment = () => {
             variant="ghost"
             rightIcon={<ArrowForwardIcon />}
             mt={8}
+            onClick={() => {
+              wallet.disconnect();
+              router.push("/");
+            }}
           >
             Cancel payment
           </Button>

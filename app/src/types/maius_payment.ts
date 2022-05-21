@@ -88,7 +88,7 @@ export type MaiusPayment = {
       "accounts": [
         {
           "name": "serviceAccount",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -313,7 +313,7 @@ export const IDL: MaiusPayment = {
       "accounts": [
         {
           "name": "serviceAccount",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {

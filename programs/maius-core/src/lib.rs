@@ -15,17 +15,17 @@ pub mod user_account;
 
 declare_id!("5dxfd7Ao3aNGaYfPeysx9wpefH5QMu94SMxvAnRBCH6t");
 
-// #[program]
-// pub mod maius_core {
-//     use super::*;
-//
-//     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-//         Ok(())
-//     }
-// }
-//
-// #[derive(Accounts)]
-// pub struct Initialize {}
+#[program]
+pub mod maius_core {
+    use super::*;
+
+    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct Initialize {}
 
 
 use crate::config::{ENCRYPTED_UTXOS_LENGTH, MERKLE_TREE_INIT_AUTHORITY};
@@ -36,8 +36,8 @@ use crate::state::InstructionIndex;
 use crate::user_account::instructions::initialize_user_account;
 use crate::utils::config;
 
-#[cfg(not(feature = "no-entrypoint"))]
-solana_program::entrypoint!(process_instruction);
+// #[cfg(not(feature = "no-entrypoint"))]
+// solana_program::entrypoint!(process_instruction);
 
 #[allow(clippy::clone_double_ref)]
 pub fn process_instruction(

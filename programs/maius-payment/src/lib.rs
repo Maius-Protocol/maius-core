@@ -146,7 +146,7 @@ pub struct CreateService<'info> {
 
 #[derive(Accounts)]
 pub struct InitializeInvoice<'info> {
-    #[account(address=service_account.key())]
+    #[account(mut)]
     pub service_account: Account<'info, Service>,
     #[account(
     init,

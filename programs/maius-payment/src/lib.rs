@@ -33,6 +33,11 @@ pub mod maius_payment {
         Ok(())
     }
 
+    pub fn initialize_customer_service_account(ctx: Context<InitializeCustomerServiceAccount>) -> ProgramResult {
+        ctx.accounts.customer_services_account.invoice_count = 0;
+        Ok(())
+    }
+
     pub fn initialize_invoice(ctx: Context<InitializeInvoice>) -> ProgramResult {
         ctx.accounts.invoice_account.user_wallet = *ctx.accounts.customer_authority.to_account_info().key;
         ctx.accounts.service_account.subscription_accounts.push(ctx.accounts.invoice_account.user_wallet);
@@ -102,6 +107,7 @@ pub struct TransferAToB<'info> {
     /// CHECK:
     #[account(mut)]
     pub wallet_b: AccountInfo<'info>,
+    system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -184,20 +190,30 @@ pub struct CreateService<'info> {
 }
 
 #[derive(Accounts)]
+pub struct InitializeCustomerServiceAccount<'info> {
+    pub service_account: Account<'info, Service>,
+    #[account(
+    init_if_needed,
+    seeds = [
+    b"customer_service_account".as_ref(),
+    service_account.key().as_ref(),
+    authority.key().as_ref(),
+    ],
+    bump,
+    payer = authority,
+    space = 256
+    )]
+    pub customer_services_account: Account<'info, CustomerServices>,
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    pub system_program: Program<'info, System>
+}
+
+#[derive(Accounts)]
 pub struct InitializeInvoice<'info> {
     #[account(mut)]
     pub service_account: Account<'info, Service>,
-    #[account(
-        init_if_needed,
-        seeds = [
-        b"customer_service".as_ref(),
-        service_account.key().as_ref(),
-        customer_authority.key().as_ref(),
-        ],
-        bump,
-        payer = customer_authority,
-        space = 8 + 1
-    )]
+    #[account(mut)]
     pub customer_services_account: Account<'info, CustomerServices>,
     #[account(
     init,
@@ -206,8 +222,6 @@ pub struct InitializeInvoice<'info> {
     b"invoice".as_ref(),
     customer_authority.key().as_ref(),
     &[customer_services_account.invoice_count as u8].as_ref()
-    // u32::to_be_bytes(get_28th_day_of_current_month().date().month()).as_ref(),
-    // u32::to_be_bytes((get_28th_day_of_current_month().date().year() % 2000) as u32).as_ref()
     ],
     bump,
     payer = customer_authority,

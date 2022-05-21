@@ -1,6 +1,7 @@
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Box,
   Button,
   Center,
@@ -19,36 +20,28 @@ import CustomerProvider, {
   useCustomerApp,
 } from "../src/hooks/useCustomerProvider";
 import { useWallet } from "@solana/wallet-adapter-react";
+import Step1 from "../src/components/Payment/Step1";
+import Step2 from "../src/components/Payment/Step2";
+
+// Step 1: Chuyen tu vi A -> B (connect vi A)
+// Step 2: Initialize Invoice (connect vi B)
+// Step 3: Chuyen tu vi B -> Merchant (connect vi B)
+
+export const STEPS = [
+  { code: "step_1", message: "Transfer from your wallet to service account" },
+  { code: "step_2", message: "Pay invoice with service account" },
+];
 
 const Payment = () => {
   const [currentStep, setCurrentStep] = useState("step_2");
   const wallet = useWallet();
-  const { program, initializeInvoice } = useCustomerApp();
+  const { merchant, service } = useCustomerApp();
+  const { data: merchantData, isLoading: isLoadingMerchantData } = merchant;
+  const { data: serviceData, isLoading: isLoadingService } = service;
   const router = useRouter();
   const { userID, merchantID, serviceID } = router.query;
 
-  const { data: merchantData, isRefetching: isLoadingMerchantData } = useQuery(
-    ["merchant", merchantID],
-    () => program.account.merchant.fetch(merchantID!),
-    {
-      enabled: program !== undefined,
-    }
-  );
-  const { data: serviceData, isRefetching: isLoadingService } = useQuery(
-    ["service", serviceID],
-    () => program.account.service.fetch(serviceID!),
-    {
-      enabled: program !== undefined,
-    }
-  );
-
   const isLoading = isLoadingMerchantData || isLoadingService;
-
-  const startPayment = async () => {
-    initializeInvoice();
-  };
-
-  const sameWallet = wallet.publicKey?.toBase58() === userID;
 
   if (isLoading) {
     return (
@@ -121,7 +114,7 @@ const Payment = () => {
               <Text fontWeight={800} fontSize={"xl"}>
                 {(serviceData?.expectedAmount || 0) / LAMPORTS_PER_SOL} SOL
               </Text>
-              <Text>Billed monthly, on 28th of current month</Text>
+              <Text>Billed monthly</Text>
             </Stack>
           </Stack>
         </Box>
@@ -135,41 +128,16 @@ const Payment = () => {
           <Text align="center" mb={4}>
             You are paying with Maius Gateway.
           </Text>
+          <Alert>{currentStep}</Alert>
 
-          {sameWallet && (
-            <>
-              <Button mb={4} w={360} size="lg">
-                Follow the notice below to continue
-              </Button>
-
-              <Text fontWeight="bold" color="red.600" textAlign="center" mb={6}>
-                You're using the same wallet that logged in{" "}
-                {merchantData?.title}.<br /> Please using different wallet that
-                having sufficient amount to protect your privacy
-              </Text>
-            </>
+          {!wallet.connected && <WalletMultiButton />}
+          {currentStep === "step_1" && (
+            <Step1 setCurrentStep={setCurrentStep} />
           )}
 
-          {!sameWallet && currentStep === "step_1" && wallet.connected && (
-            <>
-              <Button mb={6} w={360} size="lg">
-                Transfer securely to {merchantData?.title} account{"  "}
-                <ArrowForwardIcon />
-              </Button>
-            </>
+          {currentStep === "step_2" && (
+            <Step2 setCurrentStep={setCurrentStep} />
           )}
-          {currentStep === "step_2" && wallet.connected && (
-            <>
-              <Button mb={6} w={360} size="lg" onClick={startPayment}>
-                Make payment{"  "}
-                <ArrowForwardIcon />
-              </Button>
-            </>
-          )}
-
-          <div style={{ opacity: wallet.connected ? 0.5 : 1.0 }}>
-            <WalletMultiButton />
-          </div>
 
           <Button
             colorScheme="red"

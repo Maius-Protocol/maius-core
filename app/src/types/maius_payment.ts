@@ -75,8 +75,38 @@ export type MaiusPayment = {
         {
           "name": "expectedAmount",
           "type": "u64"
+        },
+        {
+          "name": "expirationPeriod",
+          "type": "i64"
         }
       ]
+    },
+    {
+      "name": "initializeCustomerServiceAccount",
+      "accounts": [
+        {
+          "name": "serviceAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "customerServicesAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     },
     {
       "name": "initializeInvoice",
@@ -87,12 +117,17 @@ export type MaiusPayment = {
           "isSigner": false
         },
         {
+          "name": "customerServicesAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "invoiceAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "authority",
+          "name": "customerAuthority",
           "isMut": true,
           "isSigner": true
         },
@@ -115,6 +150,11 @@ export type MaiusPayment = {
         {
           "name": "walletB",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
           "isSigner": false
         }
       ],
@@ -204,6 +244,40 @@ export type MaiusPayment = {
             "type": {
               "vec": "publicKey"
             }
+          },
+          {
+            "name": "expirationPeriod",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "serviceInvoice",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "serviceAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "invoiceAccounts",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "customerServices",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "invoiceCount",
+            "type": "u8"
           }
         ]
       }
@@ -220,6 +294,10 @@ export type MaiusPayment = {
           {
             "name": "isPaid",
             "type": "bool"
+          },
+          {
+            "name": "expirationTimestamp",
+            "type": "i64"
           }
         ]
       }
@@ -228,8 +306,8 @@ export type MaiusPayment = {
   "errors": [
     {
       "code": 6000,
-      "name": "amount_exceed",
-      "msg": "This is an error message clients will automatically display"
+      "name": "expiration_time_exceed",
+      "msg": "expiration_time_exceed"
     }
   ]
 };
@@ -311,8 +389,38 @@ export const IDL: MaiusPayment = {
         {
           "name": "expectedAmount",
           "type": "u64"
+        },
+        {
+          "name": "expirationPeriod",
+          "type": "i64"
         }
       ]
+    },
+    {
+      "name": "initializeCustomerServiceAccount",
+      "accounts": [
+        {
+          "name": "serviceAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "customerServicesAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     },
     {
       "name": "initializeInvoice",
@@ -323,12 +431,17 @@ export const IDL: MaiusPayment = {
           "isSigner": false
         },
         {
+          "name": "customerServicesAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "invoiceAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "authority",
+          "name": "customerAuthority",
           "isMut": true,
           "isSigner": true
         },
@@ -351,6 +464,11 @@ export const IDL: MaiusPayment = {
         {
           "name": "walletB",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
           "isSigner": false
         }
       ],
@@ -440,6 +558,40 @@ export const IDL: MaiusPayment = {
             "type": {
               "vec": "publicKey"
             }
+          },
+          {
+            "name": "expirationPeriod",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "serviceInvoice",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "serviceAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "invoiceAccounts",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "customerServices",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "invoiceCount",
+            "type": "u8"
           }
         ]
       }
@@ -456,6 +608,10 @@ export const IDL: MaiusPayment = {
           {
             "name": "isPaid",
             "type": "bool"
+          },
+          {
+            "name": "expirationTimestamp",
+            "type": "i64"
           }
         ]
       }
@@ -464,8 +620,8 @@ export const IDL: MaiusPayment = {
   "errors": [
     {
       "code": 6000,
-      "name": "amount_exceed",
-      "msg": "This is an error message clients will automatically display"
+      "name": "expiration_time_exceed",
+      "msg": "expiration_time_exceed"
     }
   ]
 };

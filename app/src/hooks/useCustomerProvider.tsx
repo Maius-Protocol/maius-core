@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import * as anchor from "@project-serum/anchor";
 import { MaiusPayment } from "../types/maius_payment";
 import { PublicKey } from "@solana/web3.js";
-import { UseQueryResult } from "react-query";
+import { useQuery, UseQueryResult } from "react-query";
 import idl from "../idl.json";
 import { programID } from "./useAppProvider";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -39,6 +39,21 @@ const CustomerProvider = ({ children }) => {
     connection.connection,
     wallet.wallet,
     anchor.AnchorProvider.defaultOptions()
+  );
+
+  const merchant = useQuery(
+    ["merchant", merchantID],
+    () => program.account.merchant.fetch(merchantID!),
+    {
+      enabled: program !== undefined,
+    }
+  );
+  const service = useQuery(
+    ["service", serviceID],
+    () => program.account.service.fetch(serviceID!),
+    {
+      enabled: program !== undefined,
+    }
   );
 
   const get28DateOfMonth = () => {
@@ -95,7 +110,16 @@ const CustomerProvider = ({ children }) => {
 
   return (
     <CustomerContext.Provider
-      value={{ program, getInvoiceAccountAddress, initializeInvoice }}
+      value={{
+        program,
+        getInvoiceAccountAddress,
+        initializeInvoice,
+        merchant,
+        service,
+        userID,
+        merchantID,
+        serviceID,
+      }}
     >
       {children}
     </CustomerContext.Provider>

@@ -55,6 +55,8 @@ const Navigation = () => {
           flex={{ base: 1, md: "auto" }}
           ml={{ base: -2 }}
           display={{ base: "flex", md: "none" }}
+          w="100%"
+          minW="100%"
         >
           <IconButton
             onClick={onToggle}

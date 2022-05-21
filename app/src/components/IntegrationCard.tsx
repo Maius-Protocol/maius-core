@@ -34,7 +34,7 @@ import { FiDollarSign } from "react-icons/fi";
 import { useRouter } from "next/router";
 
 const IntegrationCard = ({ index }) => {
-  const [inputUserAddress, setInputUserAddress] = useState('')
+  const [inputUserAddress, setInputUserAddress] = useState("");
   const queryClient = useQueryClient();
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -42,19 +42,13 @@ const IntegrationCard = ({ index }) => {
   const { data, isLoading } = useQuery(["service", index], () =>
     getServiceData(index)
   );
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
 
   const serviceAccountAddress = queryClient.getQueryData([
     "service-account-address",
     index,
   ]);
-  const paymentURL = (USER_ID: string) => `http://localhost:3000/payment?userID=${USER_ID}&merchantID=${merchantAccount?.toBase58()}&serviceID=${serviceAccountAddress}`;
-
+  const paymentURL = (USER_ID: string) =>
+    `http://localhost:3000/payment?userID=${USER_ID}&merchantID=${merchantAccount?.toBase58()}&serviceID=${serviceAccountAddress}`;
 
   if (isLoading) {
     return <Spinner />;
@@ -91,6 +85,10 @@ const IntegrationCard = ({ index }) => {
             <Text color={"gray.500"}>
               Expected amount:{" "}
               {parseInt(data.expectedAmount?.toString()) / LAMPORTS_PER_SOL} SOL
+            </Text>
+            <Text color={"gray.500"}>
+              Expiration Period:{" "}
+              {(data?.expirationPeriod?.toNumber() || 0) / (24 * 60 * 60)} days
             </Text>
           </Stack>
           <Button w="100%" mt={10} bg="blue.300" onClick={onOpen}>
@@ -135,7 +133,7 @@ const IntegrationCard = ({ index }) => {
               <Divider mt={8} />
               <FormControl mt={4}>
                 <FormLabel>Your payment URL template</FormLabel>
-                <Input value={paymentURL('USER_ID')} />
+                <Input value={paymentURL("USER_ID")} />
 
                 <Alert bg="yellow.400" mt={3}>
                   Please replace <b style={{ margin: "0 6px" }}>USER_ID</b> with
@@ -149,7 +147,10 @@ const IntegrationCard = ({ index }) => {
                 <FormLabel>Demo</FormLabel>
                 <FormControl mt={4}>
                   <FormLabel>Enter example wallet address</FormLabel>
-                  <Input onChange={(e) => setInputUserAddress(e.currentTarget.value)} value={inputUserAddress} />
+                  <Input
+                    onChange={(e) => setInputUserAddress(e.currentTarget.value)}
+                    value={inputUserAddress}
+                  />
                 </FormControl>
 
                 <FormControl mt={4}>

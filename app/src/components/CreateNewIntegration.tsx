@@ -38,12 +38,16 @@ const CreateNewIntegration = () => {
     formState: { errors },
   } = useForm();
   const { mutateAsync: createService, isLoading } = useMutation(
-    async ({ title, expected_amount }: any) => {
+    async ({ title, expected_amount, expiration_period }: any) => {
       const serviceAccount = await getServiceAccount(
         currentMerchantData?.data?.serviceCount || 0
       );
       const tx = await program.methods
-        .createService(title, new anchor.BN(expected_amount))
+        .createService(
+          title,
+          new anchor.BN(expected_amount),
+          new anchor.BN(expiration_period)
+        )
         .accounts({
           merchantAccount: merchantAccount,
           serviceAccount: serviceAccount,
@@ -51,7 +55,10 @@ const CreateNewIntegration = () => {
           systemProgram: web3.SystemProgram.programId,
         })
         .transaction();
-      return await sendTransaction(tx, connection);
+      await sendTransaction(tx, connection);
+
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await currentMerchantData.refetch();
     },
     {
       retry: false,
@@ -79,6 +86,7 @@ const CreateNewIntegration = () => {
     await createService({
       title: data.title,
       expected_amount: data.expected_amount * LAMPORTS_PER_SOL,
+      expiration_period: data.expiration_period * 24 * 60 * 60,
     });
   };
 
@@ -127,6 +135,19 @@ const CreateNewIntegration = () => {
                     {...register("expected_amount", { required: true })}
                   />
                   <FormErrorMessage>{errors.expected_amount}</FormErrorMessage>
+                </FormControl>
+                <FormControl isInvalid={errors.expiration_period}>
+                  <FormLabel htmlFor="expiration_period">
+                    Expiration Period (days)
+                  </FormLabel>
+                  <Input
+                    placeholder="14"
+                    type="text"
+                    {...register("expiration_period", { required: true })}
+                  />
+                  <FormErrorMessage>
+                    {errors.expiration_period}
+                  </FormErrorMessage>
                 </FormControl>
               </Stack>
             </ModalBody>

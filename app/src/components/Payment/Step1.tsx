@@ -33,6 +33,7 @@ const Step1 = ({ setCurrentStep }) => {
         })
         .transaction();
       await sendTransaction(tx, connection);
+      await new Promise((resolve) => setTimeout(resolve, 3000));
     },
     {
       onError: (e) => {

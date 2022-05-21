@@ -20,11 +20,11 @@ import withAuth from "../src/hooks/withAuth";
 import { useApp } from "../src/hooks/useAppProvider";
 import Lottie from "lottie-react";
 import animation from "../src/components/41375-laptop-rocket.json";
+import { useMutation } from "react-query";
 
 const SettingsPage = () => {
   useEffect(() => {}, []);
-  const { program, merchantAccount, currentMerchantData } =
-    useApp();
+  const { program, merchantAccount, currentMerchantData } = useApp();
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
   const toast = useToast();
@@ -35,30 +35,42 @@ const SettingsPage = () => {
     formState: { errors },
   } = useForm();
 
-  const initializeMerchant = async () => {
-    try {
-      const tx = await program.methods
-        .initializeMerchant()
-        .accounts({
-          merchantAccount: merchantAccount,
-          systemProgram: web3.SystemProgram.programId,
-          user: publicKey?.toBase58(),
-        })
-        .transaction();
-      await sendTransaction(tx, connection, {});
-      await currentMerchantData.refetch();
-    } catch (e: any) {
-      toast({
-        title: "Error",
-        description: e?.message?.toString(),
-        status: "error",
-        position: "bottom-left",
-      });
-    }
-  };
+  const { mutateAsync: initializeMerchant, isLoading: isInitializing } =
+    useMutation(
+      async () => {
+        const tx = await program.methods
+          .initializeMerchant()
+          .accounts({
+            merchantAccount: merchantAccount,
+            systemProgram: web3.SystemProgram.programId,
+            user: publicKey?.toBase58(),
+          })
+          .transaction();
+        await sendTransaction(tx, connection, {});
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await currentMerchantData.refetch();
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Welcome to Maius Gateway!",
+            status: "success",
+            position: "bottom-left",
+          });
+        },
+        onError: (e) => {
+          toast({
+            title: "Error",
+            description: e?.message?.toString(),
+            status: "error",
+            position: "bottom-left",
+          });
+        },
+      }
+    );
 
-  const onSubmit = async (data: any) => {
-    try {
+  const { mutateAsync: onSubmit, isLoading: isUpdating } = useMutation(
+    async (data: any) => {
       const tx = await program.methods
         .updateMerchant(data.title, data.logo)
         .accounts({
@@ -66,23 +78,29 @@ const SettingsPage = () => {
         })
         .transaction();
       await sendTransaction(tx, connection, {
-        preflightCommitment: 'processed'
+        preflightCommitment: "processed",
       });
-      await currentMerchantData.refetch()
-      toast({
-        title: "Update data successful. Please refetch page after a while.",
-        status: "success",
-        position: "bottom-left",
-      });
-    } catch (e: any) {
-      toast({
-        title: "Error",
-        description: e?.message?.toString(),
-        status: "error",
-        position: "bottom-left",
-      });
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await currentMerchantData.refetch();
+    },
+    {
+      onSuccess: () => {
+        toast({
+          title: "Update data successful.",
+          status: "success",
+          position: "bottom-left",
+        });
+      },
+      onError: (e) => {
+        toast({
+          title: "Error",
+          description: e?.message?.toString(),
+          status: "error",
+          position: "bottom-left",
+        });
+      },
     }
-  };
+  );
 
   useEffect(() => {
     if (currentMerchantData.data) {
@@ -125,6 +143,7 @@ const SettingsPage = () => {
             mt={20}
             size="lg"
             bg="green.500"
+            isLoading={isInitializing}
             color="white"
           >
             Activate your merchant account
@@ -171,6 +190,7 @@ const SettingsPage = () => {
                 }}
                 type="submit"
                 mt={12}
+                isLoading={isUpdating}
               >
                 Save
               </Button>

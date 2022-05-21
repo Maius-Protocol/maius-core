@@ -54,6 +54,7 @@ const Payment = () => {
 
   return (
     <div>
+      <Text align="center">You are paying with Maius Gateway.</Text>
       <Center py={12} display="flex" flexDirection="column">
         <Box
           role={"group"}
@@ -119,17 +120,12 @@ const Payment = () => {
           </Stack>
         </Box>
         <Box
-          mt="32"
+          mt="12"
           alignItems="center"
           justifyContent="center"
           display="flex"
           flexDirection="column"
         >
-          <Text align="center" mb={4}>
-            You are paying with Maius Gateway.
-          </Text>
-          <Alert>{currentStep}</Alert>
-
           {!wallet.connected && <WalletMultiButton />}
           {currentStep === "step_1" && (
             <Step1 setCurrentStep={setCurrentStep} />

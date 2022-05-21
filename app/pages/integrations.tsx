@@ -37,6 +37,7 @@ const Integrations = () => {
       </Container>
     );
   }
+  console.log("Current Merchant Data", currentMerchantData?.data);
 
   return (
     <Container

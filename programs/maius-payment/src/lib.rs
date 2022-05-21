@@ -24,11 +24,11 @@ pub mod maius_payment {
         Ok(())
     }
 
-    pub fn create_service(ctx: Context<CreateService>, title: String, expected_amount: u64, expiration_period: i64) -> ProgramResult {
+    pub fn create_service(ctx: Context<CreateService>, title: String, expected_amount: u64, expiration_period: u64) -> ProgramResult {
+        ctx.accounts.merchant_account.service_count += 1;
         ctx.accounts.service_account.authority = *ctx.accounts.authority.to_account_info().key;
         ctx.accounts.service_account.title = title;
         ctx.accounts.service_account.expected_amount = expected_amount;
-        ctx.accounts.merchant_account.service_count += 1;
         ctx.accounts.service_account.expiration_period = expiration_period;
         Ok(())
     }
@@ -42,7 +42,7 @@ pub mod maius_payment {
         ctx.accounts.invoice_account.user_wallet = *ctx.accounts.customer_authority.to_account_info().key;
         ctx.accounts.service_account.subscription_accounts.push(ctx.accounts.invoice_account.user_wallet);
         ctx.accounts.invoice_account.is_paid = false;
-        ctx.accounts.invoice_account.expiration_timestamp = Clock::get().unwrap().unix_timestamp + ctx.accounts.service_account.expiration_period;
+        ctx.accounts.invoice_account.expiration_timestamp = Clock::get().unwrap().unix_timestamp as u64 + ctx.accounts.service_account.expiration_period;
         ctx.accounts.customer_services_account.invoice_count += 1;
         Ok(())
     }
@@ -74,25 +74,21 @@ pub mod maius_payment {
         let merchant_account = &ctx.accounts.merchant_account;
         let wallet_b_sol: u64 = ctx.accounts.wallet_b.try_lamports().unwrap() / LAMPORTS_PER_SOL;
 
-        // if Clock::get().unwrap().unix_timestamp > invoice.expiration_timestamp {
-        //     return err!(MyError::expiration_time_exceed);
-        // }
-
-        if (wallet_b_sol >= expected_amount && Clock::get().unwrap().unix_timestamp <= invoice.expiration_timestamp) {
+        // if (wallet_b_sol >= expected_amount && Clock::get().unwrap().unix_timestamp <= invoice.expiration_timestamp) {
             let ix_sol_transfer = anchor_lang::solana_program::system_instruction::transfer(
                 &wallet_b.key(),
                 &merchant_account.key(),
                 expected_amount,
             );
-        
+
             anchor_lang::solana_program::program::invoke(
                 &ix_sol_transfer,
                 &[wallet_b.to_account_info(), merchant_account.to_account_info()]
 
             )?;
-            
+
             invoice.is_paid = true;
-        }
+        // }
 
         Ok(())
     }
@@ -152,7 +148,7 @@ pub struct Service {
     pub expected_amount: u64,
     pub subscription_accounts: Vec<Pubkey>,
     // milliseconds
-    pub expiration_period: i64,
+    pub expiration_period: u64, // Un-explainable bug when using i64.
 }
 
 #[account]
@@ -169,8 +165,9 @@ pub struct CustomerServices {
 }
 
 #[derive(Accounts)]
-#[instruction(title: String, expected_amount: u64, expiration_period: i64)]
+#[instruction(title: String, expected_amount: u64, expiration_period: u64)]
 pub struct CreateService<'info> {
+    #[account(mut)]
     pub merchant_account: Account<'info, Merchant>,
     #[account(
     init,
@@ -252,7 +249,7 @@ pub struct Invoice {
     pub user_wallet: Pubkey,
     pub is_paid: bool,
     // unix timestamp: expiration_timestamp = current_timestamp + expiration_period
-    pub expiration_timestamp: i64,
+    pub expiration_timestamp: u64,
 }
 
 pub fn get_28th_day_of_current_month() -> NaiveDateTime {

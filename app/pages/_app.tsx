@@ -58,7 +58,13 @@ function MyApp({ Component, pageProps }: AppProps) {
             <WalletModalProvider>
               <ChildAppWrapper>
                 <>
-                  <Flex top={0} as="header" position="fixed" w="100%">
+                  <Flex
+                    top={0}
+                    as="header"
+                    position="fixed"
+                    w="100%"
+                    zIndex={4}
+                  >
                     <Navigation />
                   </Flex>
                   <Container
@@ -67,6 +73,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     w="100%"
                     minH="100vh"
                     maxW="100%"
+                    zIndex={3}
                   >
                     <Component {...pageProps} />
                   </Container>

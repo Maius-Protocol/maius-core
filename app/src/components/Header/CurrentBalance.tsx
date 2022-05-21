@@ -15,7 +15,11 @@ const CurrentBalance = () => {
     <Button variant="ghost">
       <>
         Your current balance: {isLoading && <Spinner ml={2} />}
-        {!isLoading && <Text ml={2}>{(data || 0) / LAMPORTS_PER_SOL} SOL</Text>}
+        {!isLoading && (
+          <Text ml={2}>
+            {((data || 0) / LAMPORTS_PER_SOL)?.toPrecision(4)} SOL
+          </Text>
+        )}
         {error && <Text ml={2}>Cannot fetch</Text>}
       </>
     </Button>

@@ -48,7 +48,7 @@ export type MaiusPayment = {
       "accounts": [
         {
           "name": "merchantAccount",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -78,7 +78,7 @@ export type MaiusPayment = {
         },
         {
           "name": "expirationPeriod",
-          "type": "i64"
+          "type": "u64"
         }
       ]
     },
@@ -247,7 +247,7 @@ export type MaiusPayment = {
           },
           {
             "name": "expirationPeriod",
-            "type": "i64"
+            "type": "u64"
           }
         ]
       }
@@ -362,7 +362,7 @@ export const IDL: MaiusPayment = {
       "accounts": [
         {
           "name": "merchantAccount",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -392,7 +392,7 @@ export const IDL: MaiusPayment = {
         },
         {
           "name": "expirationPeriod",
-          "type": "i64"
+          "type": "u64"
         }
       ]
     },
@@ -561,7 +561,7 @@ export const IDL: MaiusPayment = {
           },
           {
             "name": "expirationPeriod",
-            "type": "i64"
+            "type": "u64"
           }
         ]
       }

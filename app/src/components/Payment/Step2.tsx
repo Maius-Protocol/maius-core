@@ -79,10 +79,10 @@ const Step2 = ({ setCurrentStep }) => {
     new Date() > existedInvoice?.expirationTimestamp?.toNumber() * 1000;
 
   const startPayment = async () => {
-    if (!existedServiceAccount && customerServiceAddress) {
-      console.log("create customer service account");
-      await initializeCustomerServiceAccount(customerServiceAddress);
-    }
+    // if (!existedServiceAccount && customerServiceAddress) {
+    //   console.log("create customer service account");
+    //   await initializeCustomerServiceAccount(customerServiceAddress);
+    // }
     if (!existedInvoice || needCreateNewInvoice) {
       console.log("create invoice account");
       await initializeInvoiceAccount();

@@ -118,7 +118,7 @@ const CustomerProvider = ({ children }) => {
     },
     { enabled: invoiceAddressQuery?.data !== null }
   );
-  console.log(invoiceAccountQuery.data, invoiceAddressQuery.data);
+  // console.log(invoiceAccountQuery.data, invoiceAddressQuery.data);
 
   const createCustomerServiceAccountQuery = useMutation(
     async (customerServiceAccountAddress: PublicKey) => {

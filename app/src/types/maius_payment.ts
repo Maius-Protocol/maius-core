@@ -83,32 +83,6 @@ export type MaiusPayment = {
       ]
     },
     {
-      "name": "initializeCustomerServiceAccount",
-      "accounts": [
-        {
-          "name": "serviceAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "customerServicesAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "initializeInvoice",
       "accounts": [
         {
@@ -297,7 +271,7 @@ export type MaiusPayment = {
           },
           {
             "name": "expirationTimestamp",
-            "type": "i64"
+            "type": "u64"
           }
         ]
       }
@@ -397,32 +371,6 @@ export const IDL: MaiusPayment = {
       ]
     },
     {
-      "name": "initializeCustomerServiceAccount",
-      "accounts": [
-        {
-          "name": "serviceAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "customerServicesAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "initializeInvoice",
       "accounts": [
         {
@@ -611,7 +559,7 @@ export const IDL: MaiusPayment = {
           },
           {
             "name": "expirationTimestamp",
-            "type": "i64"
+            "type": "u64"
           }
         ]
       }

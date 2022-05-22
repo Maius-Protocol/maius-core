@@ -26,7 +26,7 @@ const Step1 = ({ setCurrentStep }) => {
   const { mutateAsync: transfer, isLoading } = useMutation(
     async () => {
       const additionalFee = await connection.getMinimumBalanceForRentExemption(
-        1500
+        2000
       );
       const tx = await program.methods
         .tranferAToB(

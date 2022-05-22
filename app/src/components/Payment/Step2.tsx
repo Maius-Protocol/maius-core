@@ -100,7 +100,7 @@ const Step2 = ({ setCurrentStep }) => {
     if (wallet.connected && wallet.publicKey?.toBase58() !== userID) {
       wallet.disconnect();
     }
-    connection.connection.getMinimumBalanceForRentExemption(1500).then((r) => {
+    connection.connection.getMinimumBalanceForRentExemption(2000).then((r) => {
       setAdditionalFee(r / LAMPORTS_PER_SOL);
     });
   }, [wallet]);
@@ -167,7 +167,7 @@ const Step2 = ({ setCurrentStep }) => {
               variant="solid"
               colorScheme={existedInvoice?.isPaid ? "green" : "red"}
             >
-              {existedInvoice?.isPaid ? "PAID" : "UNPAID"}
+              {existedInvoice?.isPaid ? "Paid" : "Unpaid"}
             </Tag>
           </Box>
         </Box>

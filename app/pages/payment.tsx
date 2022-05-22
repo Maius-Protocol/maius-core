@@ -182,12 +182,17 @@ const Payment = () => {
             isLazy
             index={currentStep}
             onChange={(step) => {
+              if (isPaid && step === 0) {
+                return;
+              }
               setCurrentStep(step);
             }}
             colorScheme="green"
           >
             <TabList>
-              <Tab>Step 1: Transfer Securely</Tab>
+              <Tab style={{ opacity: isPaid ? 0.4 : 1.0 }}>
+                Step 1: Transfer Securely
+              </Tab>
               <Tab>Step 2: Subscribe</Tab>
             </TabList>
             <TabPanels>

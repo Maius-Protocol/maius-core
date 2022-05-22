@@ -33,10 +33,10 @@ pub mod maius_payment {
         Ok(())
     }
 
-    pub fn initialize_customer_service_account(ctx: Context<InitializeCustomerServiceAccount>) -> ProgramResult {
-        ctx.accounts.customer_services_account.invoice_count = 0;
-        Ok(())
-    }
+    // pub fn initialize_customer_service_account(ctx: Context<InitializeCustomerServiceAccount>) -> ProgramResult {
+    //     ctx.accounts.customer_services_account.invoice_count = 0;
+    //     Ok(())
+    // }
 
     pub fn initialize_invoice(ctx: Context<InitializeInvoice>) -> ProgramResult {
         ctx.accounts.invoice_account.user_wallet = *ctx.accounts.customer_authority.to_account_info().key;
@@ -186,31 +186,41 @@ pub struct CreateService<'info> {
     pub system_program: Program<'info, System>
 }
 
-#[derive(Accounts)]
-pub struct InitializeCustomerServiceAccount<'info> {
-    pub service_account: Account<'info, Service>,
-    #[account(
-    init_if_needed,
-    seeds = [
-    b"customer_service_account".as_ref(),
-    service_account.key().as_ref(),
-    authority.key().as_ref(),
-    ],
-    bump,
-    payer = authority,
-    space = 256
-    )]
-    pub customer_services_account: Account<'info, CustomerServices>,
-    #[account(mut)]
-    pub authority: Signer<'info>,
-    pub system_program: Program<'info, System>
-}
+// #[derive(Accounts)]
+// pub struct InitializeCustomerServiceAccount<'info> {
+//     pub service_account: Account<'info, Service>,
+//     #[account(
+//     init_if_needed,
+//     seeds = [
+//     b"customer_service_account".as_ref(),
+//     service_account.key().as_ref(),
+//     authority.key().as_ref(),
+//     ],
+//     bump,
+//     payer = authority,
+//     space = 256
+//     )]
+//     pub customer_services_account: Account<'info, CustomerServices>,
+//     #[account(mut)]
+//     pub authority: Signer<'info>,
+//     pub system_program: Program<'info, System>
+// }
 
 #[derive(Accounts)]
 pub struct InitializeInvoice<'info> {
     #[account(mut)]
     pub service_account: Account<'info, Service>,
-    #[account(mut)]
+    #[account(
+        init_if_needed,
+        seeds = [
+        b"customer_service_account".as_ref(),
+        service_account.key().as_ref(),
+        customer_authority.key().as_ref(),
+        ],
+        bump,
+        payer = customer_authority,
+        space = 256
+    )]
     pub customer_services_account: Account<'info, CustomerServices>,
     #[account(
     init,

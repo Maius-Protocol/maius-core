@@ -35,7 +35,7 @@ export const STEPS = [
 ];
 
 const Payment = () => {
-  const [currentStep, setCurrentStep] = useState("step_2");
+  const [currentStep, setCurrentStep] = useState("step_1");
   const wallet = useWallet();
   const {
     merchant,

@@ -39,10 +39,12 @@ pub mod maius_payment {
     // }
 
     pub fn initialize_invoice(ctx: Context<InitializeInvoice>) -> ProgramResult {
+        let current_timestamp = Clock::get().unwrap().unix_timestamp as u64;
         ctx.accounts.invoice_account.user_wallet = *ctx.accounts.customer_authority.to_account_info().key;
         ctx.accounts.service_account.subscription_accounts.push(ctx.accounts.invoice_account.user_wallet);
         ctx.accounts.invoice_account.is_paid = false;
-        ctx.accounts.invoice_account.expiration_timestamp = Clock::get().unwrap().unix_timestamp as u64 + ctx.accounts.service_account.expiration_period;
+        ctx.accounts.invoice_account.start_timestamp = current_timestamp;
+        ctx.accounts.invoice_account.expiration_timestamp = current_timestamp + ctx.accounts.service_account.expiration_period;
         ctx.accounts.customer_services_account.invoice_count += 1;
         Ok(())
     }
@@ -258,6 +260,7 @@ pub struct UpdateInvoice<'info> {
 pub struct Invoice {
     pub user_wallet: Pubkey,
     pub is_paid: bool,
+    pub start_timestamp: u64, 
     // unix timestamp: expiration_timestamp = current_timestamp + expiration_period
     pub expiration_timestamp: u64,
 }

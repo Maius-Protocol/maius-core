@@ -270,6 +270,10 @@ export type MaiusPayment = {
             "type": "bool"
           },
           {
+            "name": "startTimestamp",
+            "type": "u64"
+          },
+          {
             "name": "expirationTimestamp",
             "type": "u64"
           }
@@ -556,6 +560,10 @@ export const IDL: MaiusPayment = {
           {
             "name": "isPaid",
             "type": "bool"
+          },
+          {
+            "name": "startTimestamp",
+            "type": "u64"
           },
           {
             "name": "expirationTimestamp",

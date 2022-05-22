@@ -73,7 +73,7 @@ const IntegrationCard = ({ index }) => {
               fontSize={"sm"}
               letterSpacing={1.1}
             >
-              SERVICE #{index}
+              PLAN #{index}
             </Text>
             <Heading
               color={useColorModeValue("gray.700", "white")}
@@ -133,18 +133,12 @@ const IntegrationCard = ({ index }) => {
               <Divider mt={8} />
               <FormControl mt={4}>
                 <FormLabel>Your payment URL template</FormLabel>
-                <Input value={paymentURL("USER_ID")} />
 
                 <Alert bg="yellow.400" mt={3}>
                   Please replace <b style={{ margin: "0 6px" }}>USER_ID</b> with
                   your customer wallet{" "}
                   <b style={{ margin: "0 6px" }}>Public Key</b>
                 </Alert>
-              </FormControl>
-              <Divider mt={8} />
-
-              <FormControl mt={4}>
-                <FormLabel>Demo</FormLabel>
                 <FormControl mt={4}>
                   <FormLabel>Enter example wallet address</FormLabel>
                   <Input
@@ -158,6 +152,7 @@ const IntegrationCard = ({ index }) => {
                   <Input value={paymentURL(inputUserAddress)} />
                 </FormControl>
               </FormControl>
+              <Divider mt={8} />
             </ModalBody>
 
             <ModalFooter>

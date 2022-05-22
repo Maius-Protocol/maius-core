@@ -1,7 +1,6 @@
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
   Box,
   Button,
   Center,
@@ -14,16 +13,13 @@ import {
 } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import { useQuery } from "react-query";
-import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import CustomerProvider, {
   useCustomerApp,
 } from "../src/hooks/useCustomerProvider";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Step1 from "../src/components/Payment/Step1";
 import Step2 from "../src/components/Payment/Step2";
-import * as anchor from "@project-serum/anchor";
-import { programID } from "../src/hooks/useAppProvider";
 
 // Step 1: Chuyen tu vi A -> B (connect vi A)
 // Step 2: Initialize Invoice (connect vi B)

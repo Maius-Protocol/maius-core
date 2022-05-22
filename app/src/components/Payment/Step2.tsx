@@ -2,15 +2,10 @@ import { Box, Button, Divider, Heading, Tag, useToast } from "@chakra-ui/react";
 import { STEPS } from "../../../pages/payment";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import React, { useEffect } from "react";
-import { useMutation, useQuery } from "react-query";
 import { useCustomerApp } from "../../hooks/useCustomerProvider";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
-import * as anchor from "@project-serum/anchor";
-import { programID } from "../../hooks/useAppProvider";
 import { format } from "date-fns";
 import { Text } from "@chakra-ui/react";
-import { web3 } from "@project-serum/anchor";
 
 const Step2 = ({ setCurrentStep }) => {
   const {
@@ -109,7 +104,9 @@ const Step2 = ({ setCurrentStep }) => {
         </Button>
       )}
       {!wallet.connected && (
-        <Text mt={3}>Please connect to following wallet: {userID}</Text>
+        <Text mt={3}>
+          Please connect to following wallet: <b>{userID}</b>
+        </Text>
       )}
       {isPaid && (
         <>

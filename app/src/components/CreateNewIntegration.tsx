@@ -72,8 +72,7 @@ const CreateNewIntegration = () => {
       },
       onSuccess: () => {
         toast({
-          title:
-            "Create service successful. Please refetch page after a while.",
+          title: "Create service successful.",
           status: "success",
           position: "bottom-left",
         });
@@ -112,12 +111,12 @@ const CreateNewIntegration = () => {
         <ModalOverlay />
         <ModalContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <ModalHeader>Create a service</ModalHeader>
+            <ModalHeader>Create a plan</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <Stack spacing={4}>
                 <FormControl isInvalid={errors.name}>
-                  <FormLabel htmlFor="title">Service Title</FormLabel>
+                  <FormLabel htmlFor="title">Plan Title</FormLabel>
                   <Input
                     placeholder="1_MONTH_SUBSCRIPTION"
                     type="text"

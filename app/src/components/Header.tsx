@@ -148,8 +148,8 @@ const NAV_ITEMS: Array<NavItem> = [
     icon: FiHome,
   },
   {
-    label: "Integrations",
-    href: "/integrations",
+    label: "Plans",
+    href: "/plans",
     icon: FiPlusCircle,
   },
   {

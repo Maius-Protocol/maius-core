@@ -43,6 +43,7 @@ pub mod maius_payment {
         ctx.accounts.service_account.subscription_accounts.push(ctx.accounts.invoice_account.user_wallet);
         ctx.accounts.invoice_account.is_paid = false;
         ctx.accounts.invoice_account.expiration_timestamp = Clock::get().unwrap().unix_timestamp as u64 + ctx.accounts.service_account.expiration_period;
+        ctx.accounts.invoice_account.created_timestamp = Clock::get().unwrap().unix_timestamp as u64;
         ctx.accounts.customer_services_account.invoice_count += 1;
         Ok(())
     }
@@ -73,7 +74,6 @@ pub mod maius_payment {
         let expected_amount = ctx.accounts.service_account.expected_amount;
         let merchant_account = &ctx.accounts.merchant_account;
         let wallet_b_sol: u64 = ctx.accounts.wallet_b.try_lamports().unwrap() / LAMPORTS_PER_SOL;
-
         // if (wallet_b_sol >= expected_amount && Clock::get().unwrap().unix_timestamp <= invoice.expiration_timestamp) {
             let ix_sol_transfer = anchor_lang::solana_program::system_instruction::transfer(
                 &wallet_b.key(),
@@ -260,6 +260,7 @@ pub struct Invoice {
     pub is_paid: bool,
     // unix timestamp: expiration_timestamp = current_timestamp + expiration_period
     pub expiration_timestamp: u64,
+    pub created_timestamp: u64,
 }
 
 pub fn get_28th_day_of_current_month() -> NaiveDateTime {

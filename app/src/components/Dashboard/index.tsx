@@ -7,22 +7,7 @@ const Dashboard = () => {
   const { connection } = useConnection();
   const { sendTransaction } = useWallet();
   const toast = useToast();
-
-  const testInitialize = async () => {
-    let tx = await program.methods.initialize().transaction();
-    await sendTransaction(tx, connection);
-    toast({
-      title: "Initialized Program Successful",
-      status: "success",
-      position: "bottom-left",
-    });
-  };
-  return (
-    <Container w="100%" maxW="100%">
-      <h2>dfnksnfk</h2>
-      <Button onClick={testInitialize}>Test Initialize</Button>
-    </Container>
-  );
+  return <Container w="100%" maxW="100%"></Container>;
 };
 
 export default Dashboard;

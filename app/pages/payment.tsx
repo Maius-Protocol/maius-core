@@ -1,13 +1,22 @@
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import {
+  WalletDisconnectButton,
+  WalletMultiButton,
+} from "@solana/wallet-adapter-react-ui";
 import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
   Center,
+  Flex,
   Heading,
   Image,
   Spinner,
   Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
@@ -20,6 +29,7 @@ import CustomerProvider, {
 import { useWallet } from "@solana/wallet-adapter-react";
 import Step1 from "../src/components/Payment/Step1";
 import Step2 from "../src/components/Payment/Step2";
+import { Step, Steps, useSteps } from "chakra-ui-steps";
 
 // Step 1: Chuyen tu vi A -> B (connect vi A)
 // Step 2: Initialize Invoice (connect vi B)
@@ -27,22 +37,16 @@ import Step2 from "../src/components/Payment/Step2";
 
 export const STEPS = [
   { code: "step_1", message: "Transfer from your wallet to service account" },
-  { code: "step_2", message: "Pay invoice with service account" },
+  { code: "step_2", message: "Pay invoice" },
 ];
 
 const Payment = () => {
-  const [currentStep, setCurrentStep] = useState("step_1");
+  const [currentStep, setCurrentStep] = useState(0);
   const wallet = useWallet();
-  const {
-    merchant,
-    service,
-    customerServiceAccountQuery,
-    invoiceAccountQuery,
-  } = useCustomerApp();
+  const { merchant, service, invoiceAccountQuery } = useCustomerApp();
   const { data: merchantData, isLoading: isLoadingMerchantData } = merchant;
   const { data: serviceData, isLoading: isLoadingService } = service;
   const router = useRouter();
-  const { userID, merchantID, serviceID } = router.query;
 
   const { data: existedInvoice, isLoading: isGettingExistedInvoice } =
     invoiceAccountQuery;
@@ -58,9 +62,10 @@ const Payment = () => {
 
   useEffect(() => {
     if (isPaid) {
-      setCurrentStep("step_2");
+      setCurrentStep(1);
     }
   }, [isPaid]);
+
   if (isLoading) {
     return (
       <Center flexDirection="column">
@@ -72,110 +77,134 @@ const Payment = () => {
 
   return (
     <div>
-      <Text align="center">You are paying with Maius Gateway.</Text>
-      <Center py={12} display="flex" flexDirection="column">
-        <Box
-          role={"group"}
-          p={6}
-          maxW={"420px"}
-          w={"full"}
-          bg={useColorModeValue("white", "gray.800")}
-          boxShadow={"2xl"}
-          rounded={"lg"}
-          pos={"relative"}
-          zIndex={1}
-        >
-          <Box
-            rounded={"lg"}
-            mt={-12}
-            pos={"relative"}
-            width={"240px"}
-            height={"240px"}
-            _after={{
-              transition: "all .6s ease",
-              content: '""',
-              w: "full",
-              h: "full",
-              pos: "absolute",
-              top: 5,
-              left: "25%",
-              backgroundImage: `url(${merchantData?.logo})`,
-              filter: "blur(15px)",
-              zIndex: -1,
-            }}
-            _groupHover={{
-              _after: {
-                filter: "blur(20px)",
-              },
-            }}
-          >
-            <Image
+      <Box
+        display="flex"
+        flexDirection="row"
+        alignItems="flex-start"
+        justifyContent="center"
+      >
+        <Box w={480}>
+          <Text align="center">You are paying with Maius Gateway.</Text>
+
+          <Center py={12} display="flex" flexDirection="column">
+            <Box
+              role={"group"}
+              p={6}
+              maxW={"420px"}
+              w={"full"}
+              bg={useColorModeValue("white", "gray.800")}
+              boxShadow={"2xl"}
               rounded={"lg"}
-              height={240}
-              width={240}
-              objectFit={"cover"}
-              src={merchantData?.logo}
-              style={{ position: "absolute", left: "25%" }}
-            />
-          </Box>
-          <Stack pt={10} align={"center"}>
-            <Text
-              color={"gray.500"}
-              fontSize={"sm"}
-              textTransform={"uppercase"}
+              pos={"relative"}
+              zIndex={1}
             >
-              Merchant: {merchantData?.title}
-            </Text>
-            <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={500}>
-              {serviceData?.title}
-            </Heading>
-            <Stack direction={"column"} align={"center"}>
-              <Text fontWeight={800} fontSize={"xl"}>
-                {(serviceData?.expectedAmount || 0) / LAMPORTS_PER_SOL} SOL
-              </Text>
-              <Text>Billed monthly</Text>
-            </Stack>
-          </Stack>
+              <Box
+                rounded={"lg"}
+                mt={-12}
+                pos={"relative"}
+                width={"240px"}
+                height={"240px"}
+                _after={{
+                  transition: "all .6s ease",
+                  content: '""',
+                  w: "full",
+                  h: "full",
+                  pos: "absolute",
+                  top: 5,
+                  left: "25%",
+                  backgroundImage: `url(${merchantData?.logo})`,
+                  filter: "blur(15px)",
+                  zIndex: -1,
+                }}
+                _groupHover={{
+                  _after: {
+                    filter: "blur(20px)",
+                  },
+                }}
+              >
+                <Image
+                  rounded={"lg"}
+                  height={240}
+                  width={240}
+                  objectFit={"cover"}
+                  src={merchantData?.logo}
+                  style={{ position: "absolute", left: "25%" }}
+                />
+              </Box>
+              <Stack pt={10} align={"center"}>
+                <Text
+                  color={"gray.500"}
+                  fontSize={"sm"}
+                  textTransform={"uppercase"}
+                >
+                  Merchant: {merchantData?.title}
+                </Text>
+                <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={500}>
+                  {serviceData?.title}
+                </Heading>
+                <Stack direction={"column"} align={"center"}>
+                  <Text fontWeight={800} fontSize={"xl"}>
+                    {(serviceData?.expectedAmount || 0) / LAMPORTS_PER_SOL} SOL
+                  </Text>
+                  <Text>Billed monthly</Text>
+                </Stack>
+              </Stack>
+            </Box>
+            <Button
+              colorScheme="red"
+              variant="ghost"
+              rightIcon={<ArrowForwardIcon />}
+              mt={8}
+              onClick={() => {
+                wallet.disconnect();
+                router.push("/");
+              }}
+            >
+              Back to merchant
+            </Button>
+          </Center>
         </Box>
         <Box
           mt="12"
-          alignItems="center"
-          justifyContent="center"
+          alignItems="flex-start"
+          justifyContent="flex-start"
           display="flex"
           flexDirection="column"
+          w={480}
         >
-          {!wallet.connected && <WalletMultiButton />}
-          {currentStep === "need_repayment" && (
-            <Button
-              onClick={() => {
-                setCurrentStep("step_1");
-              }}
-            >
-              Subscription ended. Start again?
-            </Button>
-          )}
-          {currentStep === "step_1" && (
-            <Step1 setCurrentStep={setCurrentStep} />
-          )}
-
-          {currentStep === "step_2" && (
-            <Step2 setCurrentStep={setCurrentStep} />
-          )}
-
-          <Button
-            colorScheme="red"
-            variant="ghost"
-            rightIcon={<ArrowForwardIcon />}
-            mt={8}
-            onClick={() => {
-              wallet.disconnect();
-              router.push("/");
+          <Box mb={5} ml={3}>
+            <WalletDisconnectButton />
+          </Box>
+          <Tabs
+            variant="soft-rounded"
+            ml={2}
+            isManual
+            isLazy
+            index={currentStep}
+            onChange={(step) => {
+              setCurrentStep(step);
             }}
+            colorScheme="green"
           >
-            Back to merchant
-          </Button>
+            <TabList>
+              <Tab>Step 1: Transfer Securely</Tab>
+              <Tab>Step 2: Subscribe</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <Text>
+                  We will securely transfer from another wallet to your logged
+                  in account.
+                </Text>
+                <Step1 setCurrentStep={setCurrentStep} />
+              </TabPanel>
+              <TabPanel>
+                <Step2 setCurrentStep={setCurrentStep} />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </Box>
-      </Center>
+      </Box>
     </div>
   );
 };

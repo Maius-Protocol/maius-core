@@ -17,7 +17,7 @@ import IntegrationCard from "../src/components/IntegrationCard";
 
 const encodeUrl = require("encodeurl");
 
-const Integrations = () => {
+const Plans = () => {
   const { currentMerchantData } = useApp();
   const router = useRouter();
   const prefixUrl = `http://localhost:8000/payment?redirect_url=${encodeUrl(
@@ -87,4 +87,4 @@ const Integrations = () => {
   return <div>Your URL Payment: {prefixUrl}</div>;
 };
 
-export default withAuth(Integrations);
+export default withAuth(Plans);

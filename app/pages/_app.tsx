@@ -6,6 +6,7 @@ import Head from "next/head";
 import {
   ChakraProvider,
   Container,
+  extendTheme,
   Flex,
   useColorModeValue,
 } from "@chakra-ui/react";

@@ -1,4 +1,4 @@
-import { Button, Container, Text, useToast } from "@chakra-ui/react";
+import { Box, Button, Container, Text, useToast } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import React from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -6,8 +6,8 @@ import { useRouter } from "next/router";
 import { useCustomerApp } from "../../hooks/useCustomerProvider";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { STEPS } from "../../../pages/payment";
-import { PublicKey } from "@solana/web3.js";
-import { web3 } from "@project-serum/anchor";
+import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { BN, web3 } from "@project-serum/anchor";
 import { useMutation } from "react-query";
 
 const Step1 = ({ setCurrentStep }) => {
@@ -25,8 +25,13 @@ const Step1 = ({ setCurrentStep }) => {
   const walletB = new PublicKey(userID);
   const { mutateAsync: transfer, isLoading } = useMutation(
     async () => {
+      const additionalFee = await connection.getMinimumBalanceForRentExemption(
+        1500
+      );
       const tx = await program.methods
-        .tranferAToB(serviceData?.expectedAmount)
+        .tranferAToB(
+          new BN(serviceData?.expectedAmount?.toNumber() + additionalFee)
+        )
         .accounts({
           walletA: walletA!,
           walletB: walletB,
@@ -51,35 +56,28 @@ const Step1 = ({ setCurrentStep }) => {
           position: "bottom-left",
         });
         disconnect();
-        setCurrentStep("step_2");
+        setCurrentStep(1);
       },
     }
   );
 
   return (
-    <Container mt={4}>
+    <Box mt={4}>
       {sameWallet && (
-        <Container
-          display="flex"
-          flexDirection="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Text fontWeight="bold" color="red.600" textAlign="left" mb={6}>
-            You're using the same wallet that logged in {merchantData?.title}.
-            <br /> Please using different wallet that having sufficient amount
-            to protect your privacy
-          </Text>
-          <WalletMultiButton style={{ width: "320px" }} />
-        </Container>
+        <Text fontWeight="bold" color="red.600" textAlign="left" mb={6}>
+          You're using the same wallet that logged in {merchantData?.title}.
+          <br /> Please using different wallet that having sufficient amount to
+          protect your privacy
+        </Text>
       )}
-      {!sameWallet && (
+      {!wallet.connected && <WalletMultiButton />}
+      {!sameWallet && wallet.connected && (
         <Button onClick={transfer} isLoading={isLoading}>
           {STEPS[0].message}
           <ArrowForwardIcon style={{ marginLeft: "8px" }} />
         </Button>
       )}
-    </Container>
+    </Box>
   );
 };
 

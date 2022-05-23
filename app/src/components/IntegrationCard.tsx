@@ -90,6 +90,9 @@ const IntegrationCard = ({ index }) => {
               Expiration Period:{" "}
               {(data?.expirationPeriod?.toNumber() || 0) / (24 * 60 * 60)} days
             </Text>
+            <Text color={"gray.500"}>
+              Subscribers: {data?.subscriptionAccounts?.length} subs
+            </Text>
           </Stack>
           <Button w="100%" mt={10} bg="blue.300" onClick={onOpen}>
             Create Payment URL
@@ -99,15 +102,14 @@ const IntegrationCard = ({ index }) => {
             mt={2}
             onClick={() => {
               router.push({
-                pathname: "/transactions",
+                pathname: "/invoices",
                 query: {
-                  serviceID: index,
+                  serviceIndex: index,
                 },
               });
             }}
           >
-            <FiDollarSign />
-            Transactions History
+            Invoices History
           </Button>
         </Box>
       </Center>

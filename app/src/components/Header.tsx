@@ -8,8 +8,6 @@ import {
   Popover,
   PopoverTrigger,
   Stack,
-  Text,
-  useBreakpointValue,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -18,10 +16,11 @@ import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import React from "react";
-import { FiDollarSign, FiHome, FiPlusCircle, FiSettings } from "react-icons/fi";
+import { FiHome, FiPlusCircle, FiSettings } from "react-icons/fi";
 import CurrentBalance from "./Header/CurrentBalance";
 import { useRouter } from "next/router";
-
+import Image from "next/image";
+import Logo from "./logo_bold.png";
 const Navigation = () => {
   const router = useRouter();
   const { isOpen, onToggle } = useDisclosure();
@@ -73,15 +72,9 @@ const Navigation = () => {
           alignItems="center"
           justifyContent="flex-start"
         >
-          <Text
-            textAlign={useBreakpointValue({ base: "center", md: "left" })}
-            fontFamily={"heading"}
-            fontWeight="bold"
-            color={useColorModeValue("gray.800", "white")}
-          >
-            Maius Payment Gateway
-          </Text>
-
+          <Box p={1}>
+            <Image alt="MaiusPay" src={Logo} width={333 / 3} height={129 / 3} />
+          </Box>
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <Stack direction={"row"} spacing={4}>
               {wallet.connected &&

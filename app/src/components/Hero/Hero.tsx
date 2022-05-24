@@ -29,14 +29,14 @@ const Hero = () => {
           lineHeight={"110%"}
         >
           Private Payment{" "}
-          <Text as={"span"} color={"orange.400"}>
+          <Text as={"span"} color={"#499AD7"}>
             made easy
           </Text>
         </Heading>
         <Text color={"gray.500"} maxW={"3xl"}>
-          Never miss a meeting. Never be late for one too. Keep track of your
-          meetings and receive smart reminders in appropriate times. Read your
-          smart “Daily Agenda” every morning.
+          A payment gateway to help merchants simplify Subscription Payment. It
+          similar to Stripe or PayPal, but using Solana and focusing on
+          subscriptions flow & truly privacy thanks to Light Protocol
         </Text>
         <Stack spacing={6} direction={"row"}>
           <WalletMultiButton />

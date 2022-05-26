@@ -25,7 +25,8 @@ const Navigation = () => {
   const router = useRouter();
   const { isOpen, onToggle } = useDisclosure();
   const wallet = useWallet();
-
+  const bg = useColorModeValue("gray.600", "white");
+  const border = useColorModeValue("gray.200", "gray.900");
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
   const popoverContentBgColor = useColorModeValue("white", "gray.800");
@@ -37,12 +38,12 @@ const Navigation = () => {
   return (
     <Box w="100%" minW="100%">
       <Flex
-        color={useColorModeValue("gray.600", "white")}
+        color={bg}
         minH={"60px"}
         px={{ base: 4 }}
         borderBottom={1}
         borderStyle={"solid"}
-        borderColor={useColorModeValue("gray.200", "gray.900")}
+        borderColor={border}
         alignItems="center"
         justifyContent="center"
         backgroundColor="rgba(255, 255, 255, 0.4)"

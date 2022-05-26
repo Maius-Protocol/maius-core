@@ -47,6 +47,7 @@ const Payment = () => {
   const { data: merchantData, isLoading: isLoadingMerchantData } = merchant;
   const { data: serviceData, isLoading: isLoadingService } = service;
   const router = useRouter();
+  const bg = useColorModeValue("white", "gray.800");
 
   const { data: existedInvoice, isLoading: isGettingExistedInvoice } =
     invoiceAccountQuery;
@@ -92,7 +93,7 @@ const Payment = () => {
               p={6}
               maxW={"420px"}
               w={"full"}
-              bg={useColorModeValue("white", "gray.800")}
+              bg={bg}
               boxShadow={"2xl"}
               rounded={"lg"}
               pos={"relative"}

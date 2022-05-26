@@ -42,7 +42,8 @@ const IntegrationCard = ({ index }) => {
   const { data, isLoading } = useQuery(["service", index], () =>
     getServiceData(index)
   );
-
+  const bg = useColorModeValue("white", "gray.900");
+  const bg2 = useColorModeValue("gray.700", "white");
   const serviceAccountAddress = queryClient.getQueryData([
     "service-account-address",
     index,
@@ -59,7 +60,7 @@ const IntegrationCard = ({ index }) => {
       <Center py={6} mr={12} mb={12}>
         <Box
           w={"320px"}
-          bg={useColorModeValue("white", "gray.900")}
+          bg={bg}
           boxShadow={"2xl"}
           rounded={"md"}
           p={6}
@@ -75,11 +76,7 @@ const IntegrationCard = ({ index }) => {
             >
               PLAN #{index}
             </Text>
-            <Heading
-              color={useColorModeValue("gray.700", "white")}
-              fontSize={"2xl"}
-              fontFamily={"body"}
-            >
+            <Heading color={bg2} fontSize={"2xl"} fontFamily={"body"}>
               {data.title}
             </Heading>
             <Text color={"gray.500"}>

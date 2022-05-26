@@ -65,7 +65,7 @@ const Step1 = ({ setCurrentStep }) => {
     <Box mt={4}>
       {sameWallet && (
         <Text fontWeight="bold" color="red.600" textAlign="left" mb={6}>
-          You're using the same wallet that logged in {merchantData?.title}.
+          You{`'`}re using the same wallet that logged in {merchantData?.title}.
           <br /> Please using different wallet that having sufficient amount to
           protect your privacy
         </Text>

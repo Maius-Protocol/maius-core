@@ -27,6 +27,8 @@ const SettingsPage = () => {
   const { program, merchantAccount, currentMerchantData } = useApp();
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
+  const bg = useColorModeValue("white", "gray.700");
+  const bg2 = useColorModeValue("white", "gray.700");
   const toast = useToast();
   const {
     register,
@@ -120,7 +122,7 @@ const SettingsPage = () => {
       <Container maxW={640} pt={12}>
         <Box
           rounded={"lg"}
-          bg={useColorModeValue("white", "gray.700")}
+          bg={bg2}
           boxShadow={"lg"}
           p={8}
           display="flex"
@@ -155,12 +157,7 @@ const SettingsPage = () => {
 
   return (
     <Container maxW={640} pt={12}>
-      <Box
-        rounded={"lg"}
-        bg={useColorModeValue("white", "gray.700")}
-        boxShadow={"lg"}
-        p={8}
-      >
+      <Box rounded={"lg"} bg={bg} boxShadow={"lg"} p={8}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={4}>
             <FormControl isInvalid={errors.name}>

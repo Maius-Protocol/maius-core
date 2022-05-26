@@ -32,7 +32,7 @@ const queryClient = new QueryClient({
 });
 
 const wallets = [new PhantomWalletAdapter()];
-const ENDPOINT = "http://127.0.0.1:8899";
+const ENDPOINT = "https://api.devnet.solana.com";
 
 const ChildAppWrapper: React.FunctionComponent = ({ children }) => {
   const router = useRouter();

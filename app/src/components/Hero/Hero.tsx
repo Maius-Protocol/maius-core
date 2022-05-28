@@ -30,7 +30,7 @@ const Hero = () => {
           lineHeight={"110%"}
         >
           Privacy Subscription Payments <br />
-          <Text as={"span"} color={"#3EADCF"}>
+          <Text as={"span"} color={"#868686"}>
             made easy
           </Text>
         </Heading>

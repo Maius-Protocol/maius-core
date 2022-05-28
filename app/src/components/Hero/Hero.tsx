@@ -11,6 +11,7 @@ import animation from "./23730-3d-mobile-payment.json";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import React from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
+import TypeAnimation from "react-type-animation";
 
 const Hero = () => {
   const wallet = useWallet();
@@ -28,8 +29,8 @@ const Hero = () => {
           fontSize={{ base: "3xl", sm: "4xl", md: "6xl" }}
           lineHeight={"110%"}
         >
-          Private Payment{" "}
-          <Text as={"span"} color={"#499AD7"}>
+          Privacy Subscription Payments <br />
+          <Text as={"span"} color={"#3EADCF"}>
             made easy
           </Text>
         </Heading>

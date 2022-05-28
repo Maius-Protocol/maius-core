@@ -8,6 +8,7 @@ import {
   Popover,
   PopoverTrigger,
   Stack,
+  Image,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -19,8 +20,7 @@ import React from "react";
 import { FiHome, FiPlusCircle, FiSettings } from "react-icons/fi";
 import CurrentBalance from "./Header/CurrentBalance";
 import { useRouter } from "next/router";
-import Image from "next/image";
-import Logo from "./logo_bold.png";
+
 const Navigation = () => {
   const router = useRouter();
   const { isOpen, onToggle } = useDisclosure();
@@ -73,10 +73,10 @@ const Navigation = () => {
           alignItems="center"
           justifyContent="flex-start"
         >
-          <Box p={1}>
-            <Image alt="MaiusPay" src={Logo} width={333 / 3} height={129 / 3} />
+          <Box p={1} display="flex" flexDirection="row" alignItems="center">
+            <Image alt="MaiusPay" src="/logo.svg" maxW={64} maxH="32px" />
           </Box>
-          <Flex display={{ base: "none", md: "flex" }} ml={10}>
+          <Flex display={{ base: "none", md: "flex" }} ml={4}>
             <Stack direction={"row"} spacing={4}>
               {wallet.connected &&
                 NAV_ITEMS.map((navItem) => (

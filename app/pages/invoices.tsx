@@ -50,7 +50,7 @@ const Invoices = () => {
         justifyContent="space-between"
       >
         <Heading color={"gray.800"} lineHeight={1.1} fontSize={{ base: "3xl" }}>
-          Invoice History of Service #{serviceIndex}
+          Invoice History of Plan #{serviceIndex}
         </Heading>
       </Box>
       <Box

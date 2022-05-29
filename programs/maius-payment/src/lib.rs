@@ -78,7 +78,7 @@ pub mod maius_payment {
         // if (wallet_b_sol >= expected_amount && Clock::get().unwrap().unix_timestamp <= invoice.expiration_timestamp) {
             let ix_sol_transfer = anchor_lang::solana_program::system_instruction::transfer(
                 &wallet_b.key(),
-                &merchant_account.key(),
+                &merchant_account.authority,
                 expected_amount,
             );
 

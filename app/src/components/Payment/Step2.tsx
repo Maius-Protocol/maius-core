@@ -148,14 +148,6 @@ const Step2 = ({ setCurrentStep }) => {
           >
             next payment: {format(expirationTimestamp, "HH:mm:ss dd-MM-yyyy")}
           </Text>
-          <Button
-            onClick={() => {
-              router.push("https://google.com");
-            }}
-          >
-            Use Service
-            <ArrowForwardIcon style={{ marginLeft: "8px" }} />
-          </Button>
         </>
       )}
       <Divider my={4} />
@@ -167,7 +159,7 @@ const Step2 = ({ setCurrentStep }) => {
               variant="solid"
               colorScheme={existedInvoice?.isPaid ? "green" : "red"}
             >
-              {existedInvoice?.isPaid ? "Paid" : "Unpaid"}
+              {existedInvoice?.isPaid ? "Payment Successful" : "Unpaid"}
             </Tag>
           </Box>
         </Box>

@@ -192,15 +192,16 @@ const Payment = () => {
           >
             <TabList>
               <Tab style={{ opacity: isPaid ? 0.4 : 1.0 }}>
-                Step 1: Transfer Securely
+                Step 1: Privacy Transfer
               </Tab>
               <Tab>Step 2: Subscribe</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
                 <Text>
-                  We will securely transfer from your funding wallet to your
-                  register wallet. Powered by Light Protocol
+                  We will securely transfer from your <b>Funding Wallet</b> to
+                  your
+                  <b>Register Wallet</b>. Powered by Light Protocol.
                 </Text>
                 <Step1 setCurrentStep={setCurrentStep} />
               </TabPanel>

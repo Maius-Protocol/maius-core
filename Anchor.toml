@@ -1,6 +1,6 @@
 [features]
 seeds = false
-[programs.localnet]
+[programs.devnet]
 maius_payment = "oBqg1ZeS6J5QJKXMEYmxNGF4CCe3B1rYCJ4ZSkuYXHT"
 maius_core = "5dxfd7Ao3aNGaYfPeysx9wpefH5QMu94SMxvAnRBCH6t"
 
@@ -8,7 +8,7 @@ maius_core = "5dxfd7Ao3aNGaYfPeysx9wpefH5QMu94SMxvAnRBCH6t"
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "/Users/tuanpm/.config/solana/id.json"
 
 [scripts]

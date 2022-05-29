@@ -143,7 +143,7 @@ export type MaiusPayment = {
       "name": "transferBToWallet",
       "accounts": [
         {
-          "name": "merchantAccount",
+          "name": "merchantWallet",
           "isMut": true,
           "isSigner": false
         },
@@ -439,7 +439,7 @@ export const IDL: MaiusPayment = {
       "name": "transferBToWallet",
       "accounts": [
         {
-          "name": "merchantAccount",
+          "name": "merchantWallet",
           "isMut": true,
           "isSigner": false
         },

@@ -73,18 +73,18 @@ pub mod maius_payment {
         let wallet_b = &ctx.accounts.wallet_b;
         let invoice = &mut ctx.accounts.invoice_account;
         let expected_amount = ctx.accounts.service_account.expected_amount;
-        let merchant_account = &ctx.accounts.merchant_account;
+        let merchant_wallet = &ctx.accounts.merchant_wallet;
         let wallet_b_sol: u64 = ctx.accounts.wallet_b.try_lamports().unwrap() / LAMPORTS_PER_SOL;
         // if (wallet_b_sol >= expected_amount && Clock::get().unwrap().unix_timestamp <= invoice.expiration_timestamp) {
             let ix_sol_transfer = anchor_lang::solana_program::system_instruction::transfer(
                 &wallet_b.key(),
-                &merchant_account.authority,
+                &merchant_wallet.key(),
                 expected_amount,
             );
 
             anchor_lang::solana_program::program::invoke(
                 &ix_sol_transfer,
-                &[wallet_b.to_account_info(), merchant_account.to_account_info()]
+                &[wallet_b.to_account_info(), merchant_wallet.clone()]
 
             )?;
 
@@ -244,8 +244,9 @@ pub struct InitializeInvoice<'info> {
 #[derive(Accounts)]
 // #[instruction(title: String, expected_amount: u64)]
 pub struct UpdateInvoice<'info> {
+    /// CHECK:
     #[account(mut)]
-    pub merchant_account: Account<'info, Merchant>,
+    pub merchant_wallet: AccountInfo<'info>,
     #[account(mut)]
     pub service_account: Account<'info, Service>,
     #[account(mut)]

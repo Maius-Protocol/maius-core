@@ -49,7 +49,7 @@ const IntegrationCard = ({ index }) => {
     index,
   ]);
   const paymentURL = (USER_ID: string) =>
-    `http://localhost:3000/payment?userID=${USER_ID}&merchantID=${merchantAccount?.toBase58()}&serviceID=${serviceAccountAddress}`;
+    `https://maius-pay.vercel.app/payment?userID=${USER_ID}&merchantID=${merchantAccount?.toBase58()}&serviceID=${serviceAccountAddress}`;
 
   if (isLoading) {
     return <Spinner />;
@@ -122,11 +122,7 @@ const IntegrationCard = ({ index }) => {
               <Box display="flex" flexDirection="row">
                 <FormControl>
                   <FormLabel>Gateway Base URL</FormLabel>
-                  <div>http://localhost:3000/payment</div>
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Service PDA Address</FormLabel>
-                  <div>http://localhost:3000/payment</div>
+                  <div>https://maius-pay.vercel.app/payment</div>
                 </FormControl>
               </Box>
               <Divider mt={8} />
@@ -139,7 +135,7 @@ const IntegrationCard = ({ index }) => {
                   <b style={{ margin: "0 6px" }}>Public Key</b>
                 </Alert>
                 <FormControl mt={4}>
-                  <FormLabel>Enter example wallet address</FormLabel>
+                  <FormLabel>Enter customer register wallet address</FormLabel>
                   <Input
                     onChange={(e) => setInputUserAddress(e.currentTarget.value)}
                     value={inputUserAddress}
@@ -147,7 +143,7 @@ const IntegrationCard = ({ index }) => {
                 </FormControl>
 
                 <FormControl mt={4}>
-                  <FormLabel>Enter example wallet address</FormLabel>
+                  <FormLabel>Customer Payment URL</FormLabel>
                   <Input value={paymentURL(inputUserAddress)} />
                 </FormControl>
               </FormControl>

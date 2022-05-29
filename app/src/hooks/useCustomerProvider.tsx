@@ -27,7 +27,7 @@ const CustomerContext = React.createContext<CustomerContextState | undefined>(
 
 const CustomerProvider = ({ children }) => {
   const router = useRouter();
-  const { userID, merchantID, serviceID } = router.query;
+  const { userID, merchantID, merchantWallet, serviceID } = router.query;
   const [program, setProgram] = useState<
     anchor.Program<MaiusPayment> | undefined
   >();
@@ -195,7 +195,7 @@ const CustomerProvider = ({ children }) => {
       const tx = await program.methods
         .transferBToWallet()
         .accounts({
-          merchantWallet: new PublicKey(merchantID!),
+          merchantWallet: new PublicKey(merchantWallet!),
           serviceAccount: new PublicKey(serviceID!),
           invoiceAccount: invoiceAddressQuery.data!,
           walletB: wallet.publicKey!,

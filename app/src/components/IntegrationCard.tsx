@@ -51,7 +51,7 @@ const IntegrationCard = ({ index }) => {
     index,
   ]);
   const paymentURL = (USER_ID: string) =>
-    `https://maius-pay.vercel.app/payment?userID=${USER_ID}&merchantID=${publicKey?.toBase58()}&serviceID=${serviceAccountAddress}`;
+    `https://maius-pay.vercel.app/payment?userID=${USER_ID}&merchantWallet=${publicKey?.toBase58()}&merchantID=${merchantAccount?.toBase58()}&serviceID=${serviceAccountAddress}`;
 
   if (isLoading) {
     return <Spinner />;

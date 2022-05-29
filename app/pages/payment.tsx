@@ -199,8 +199,8 @@ const Payment = () => {
             <TabPanels>
               <TabPanel>
                 <Text>
-                  We will securely transfer from another wallet to your logged
-                  in account.
+                  We will securely transfer from your funding wallet to your
+                  register wallet. Powered by Light Protocol
                 </Text>
                 <Step1 setCurrentStep={setCurrentStep} />
               </TabPanel>

@@ -200,8 +200,7 @@ const Payment = () => {
               <TabPanel>
                 <Text>
                   We will securely transfer from your <b>Funding Wallet</b> to
-                  your
-                  <b>Register Wallet</b>. Powered by Light Protocol.
+                  your <b>Register Wallet</b>. Powered by Light Protocol.
                 </Text>
                 <Step1 setCurrentStep={setCurrentStep} />
               </TabPanel>

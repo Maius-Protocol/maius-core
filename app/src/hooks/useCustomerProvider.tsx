@@ -195,7 +195,7 @@ const CustomerProvider = ({ children }) => {
       const tx = await program.methods
         .transferBToWallet()
         .accounts({
-          merchantAccount: new PublicKey(merchantID!),
+          merchantWallet: new PublicKey(merchantID!),
           serviceAccount: new PublicKey(serviceID!),
           invoiceAccount: invoiceAddressQuery.data!,
           walletB: wallet.publicKey!,

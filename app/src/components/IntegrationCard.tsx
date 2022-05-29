@@ -32,11 +32,13 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useForm } from "react-hook-form";
 import { FiDollarSign } from "react-icons/fi";
 import { useRouter } from "next/router";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const IntegrationCard = ({ index }) => {
   const [inputUserAddress, setInputUserAddress] = useState("");
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { publicKey } = useWallet();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { getServiceData, merchantAccount } = useApp();
   const { data, isLoading } = useQuery(["service", index], () =>
@@ -49,7 +51,7 @@ const IntegrationCard = ({ index }) => {
     index,
   ]);
   const paymentURL = (USER_ID: string) =>
-    `https://maius-pay.vercel.app/payment?userID=${USER_ID}&merchantID=${merchantAccount?.toBase58()}&serviceID=${serviceAccountAddress}`;
+    `https://maius-pay.vercel.app/payment?userID=${USER_ID}&merchantID=${publicKey?.toBase58()}&serviceID=${serviceAccountAddress}`;
 
   if (isLoading) {
     return <Spinner />;

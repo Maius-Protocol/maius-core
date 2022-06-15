@@ -123,11 +123,11 @@ const Payment = () => {
                   },
                 }}
               >
-                <Image
-                  rounded={"lg"}
-                  height={240}
-                  width={240}
-                  objectFit={"cover"}
+                <img
+                  // rounded={"lg"}
+                  // height={240}
+                  // width={240}
+                  // objectFit={"cover"}
                   src={merchantData?.logo}
                   style={{ position: "absolute", left: "25%" }}
                 />

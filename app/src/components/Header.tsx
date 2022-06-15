@@ -74,11 +74,7 @@ const Navigation = () => {
           justifyContent="flex-start"
         >
           <Box p={1} display="flex" flexDirection="row" alignItems="center">
-            <img
-              alt="MaiusPay"
-              src="/logo.svg"
-              style={{ maxWidth: "64px", maxHeight: "32px" }}
-            />
+            <Image alt="MaiusPay" src="/logo.svg" maxW={64} maxH="32px" />
           </Box>
           <Flex display={{ base: "none", md: "flex" }} ml={4}>
             <Stack direction={"row"} spacing={4}>

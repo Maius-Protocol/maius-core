@@ -1,14 +1,12 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::entrypoint::ProgramResult;
-use chrono::{Datelike, NaiveDate, NaiveDateTime};
 
 pub mod instructions;
 pub mod schema;
-use anchor_lang::solana_program::native_token::LAMPORTS_PER_SOL;
+
 
 use instructions::*;
 
-declare_id!("oBqg1ZeS6J5QJKXMEYmxNGF4CCe3B1rYCJ4ZSkuYXHT");
+declare_id!("AJ9o5YffqXRpw7Bm6K1YRGXApUu2qCeN3TxBQqMa4mEm");
 
 #[program]
 pub mod maius_payment {

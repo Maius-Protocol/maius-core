@@ -22,6 +22,7 @@ describe("maius-core", () => {
   const program = anchor.workspace.MaiusPayment as Program<MaiusPayment>;
 
   let merchantAuthorWallet: Wallet;
+  let fundingWallet: Wallet; // Wallet A
 
   let service: PublicKey,
       serviceName: string,
@@ -40,6 +41,13 @@ describe("maius-core", () => {
         "confirmed"
     );
     console.log('merchant author wallet', await provider.connection.getBalance(merchantAuthorWallet.publicKey))
+
+    fundingWallet = new Wallet(Keypair.generate());
+    await provider.connection.confirmTransaction(
+        await provider.connection.requestAirdrop(fundingWallet.publicKey, 5 * LAMPORTS_PER_SOL),
+        "confirmed"
+    );
+    console.log('funding wallet', await provider.connection.getBalance(fundingWallet.publicKey))
   });
 
   it('Initialize a merchant', async () => {

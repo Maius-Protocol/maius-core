@@ -23,14 +23,20 @@ describe("maius-core", () => {
 
   let merchantAuthorWallet: Wallet;
   let fundingWallet: Wallet; // Wallet A
+  let registerWallet: Wallet; // Wallet B
 
   let service: PublicKey,
+      merchant: PublicKey,
+      customerService: PublicKey,
+      invoice: PublicKey,
       serviceName: string,
       expectedAmount: number,
-      expirationPeriod: number,
-      merchant: PublicKey;
+      expirationPeriod: number;
+
 
   let serviceBump: number,
+      customerServiceBump: number,
+      invoiceBump: number,
       merchantBump: number;
 
   before("Boilerplates", async () => {
@@ -47,7 +53,10 @@ describe("maius-core", () => {
         await provider.connection.requestAirdrop(fundingWallet.publicKey, 5 * LAMPORTS_PER_SOL),
         "confirmed"
     );
-    console.log('funding wallet', await provider.connection.getBalance(fundingWallet.publicKey))
+    console.log('register wallet', await provider.connection.getBalance(fundingWallet.publicKey))
+
+    registerWallet = new Wallet(Keypair.generate());
+    console.log('register wallet', await provider.connection.getBalance(registerWallet.publicKey))
   });
 
   it('Initialize a merchant', async () => {
@@ -77,11 +86,12 @@ describe("maius-core", () => {
     expectedAmount = 1;
     expirationPeriod = 90;
     const merchantAccount = await program.account.merchant.fetch(merchant);
+
     [service, serviceBump] = await PublicKey.findProgramAddress(
         [
           utf8.encode("service"),
           merchant.toBuffer(),
-          new anchor.BN(merchantAccount.serviceCount)?.toArrayLike(Buffer),,
+          new anchor.BN(merchantAccount.serviceCount)?.toArrayLike(Buffer),
         ],
         program.programId
     );
@@ -97,6 +107,81 @@ describe("maius-core", () => {
       },
       signers: [merchantAuthorWallet.payer]
     });
+  });
+
+  it('transfer funding wallet to register wallet', async () => {
+    console.log('funding wallet before: ', (await provider.connection.getBalance(fundingWallet.publicKey))/LAMPORTS_PER_SOL)
+    console.log('register wallet before: ', (await provider.connection.getBalance(registerWallet.publicKey))/LAMPORTS_PER_SOL)
+    const _tx = await program.rpc.tranferAToB(new BN(1.1*LAMPORTS_PER_SOL), {
+      accounts: {
+        walletA: fundingWallet.publicKey,
+        walletB: registerWallet.publicKey,
+        // rent: SYSVAR_RENT_PUBKEY,
+        systemProgram: SystemProgram.programId,
+      },
+      signers: [fundingWallet.payer]
+    });
+    console.log('funding wallet after: ', (await provider.connection.getBalance(fundingWallet.publicKey))/LAMPORTS_PER_SOL)
+    console.log('register wallet after: ', (await provider.connection.getBalance(registerWallet.publicKey))/LAMPORTS_PER_SOL)
+  });
+
+  it('Initialize a invoice', async () => {
+
+    [customerService, customerServiceBump] = await PublicKey.findProgramAddress(
+        [
+          utf8.encode("customer_service_account"),
+          service.toBuffer(),
+          registerWallet.publicKey.toBuffer(),
+        ],
+        program.programId
+    );
+
+
+    const customerServiceAccount = await program.account.customerServices.fetch(customerService);
+
+    [invoice, invoiceBump] = await PublicKey.findProgramAddress(
+        [
+          service.toBuffer(),
+          utf8.encode("invoice"),
+          registerWallet.publicKey.toBuffer(),
+          new anchor.BN(customerServiceAccount.invoiceCount)?.toArrayLike(Buffer),
+        ],
+        program.programId
+    );
+
+
+    const _tx = await program.rpc.initializeInvoice( {
+      accounts: {
+        serviceAccount: service,
+        customerServicesAccount: customerService,
+        invoiceAccount: invoice,
+        customerAuthority: registerWallet.publicKey,
+        // rent: SYSVAR_RENT_PUBKEY,
+        systemProgram: SystemProgram.programId,
+      },
+      signers: [registerWallet.payer]
+    });
+  });
+
+  it('Update a voice', async () => {
+
+    console.log('merchant author wallet before: ', (await provider.connection.getBalance(merchantAuthorWallet.publicKey))/LAMPORTS_PER_SOL)
+    console.log('register wallet before: ', (await provider.connection.getBalance(registerWallet.publicKey))/LAMPORTS_PER_SOL)
+
+    const _tx = await program.rpc.transferBToWallet( {
+      accounts: {
+        serviceAccount: service,
+        merchantWallet: merchantAuthorWallet.publicKey,
+        invoiceAccount: invoice,
+        walletB: registerWallet.publicKey,
+        // rent: SYSVAR_RENT_PUBKEY,
+        systemProgram: SystemProgram.programId,
+      },
+      signers: [registerWallet.payer]
+    });
+
+    console.log('merchant author wallet after: ', (await provider.connection.getBalance(merchantAuthorWallet.publicKey))/LAMPORTS_PER_SOL)
+    console.log('register wallet after: ', (await provider.connection.getBalance(registerWallet.publicKey))/LAMPORTS_PER_SOL)
   });
 
 });

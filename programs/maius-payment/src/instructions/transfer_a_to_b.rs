@@ -6,7 +6,7 @@ use anchor_lang::solana_program::entrypoint_deprecated::ProgramResult;
 pub struct TransferAToB<'info> {
     /// CHECK:
     #[account(mut)]
-    pub wallet_a: AccountInfo<'info>,
+    pub wallet_a: Signer<'info>,
     /// CHECK:
     #[account(mut)]
     pub wallet_b: AccountInfo<'info>,
